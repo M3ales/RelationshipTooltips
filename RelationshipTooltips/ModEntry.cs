@@ -31,13 +31,13 @@ namespace M3ales.RelationshipTooltips
             GameEvents.QuarterSecondTick += CheckForNPCUnderMouse;
             GraphicsEvents.OnPostRenderHudEvent += GraphicsEvents_OnPostRenderHudEvent;
             InputEvents.ButtonPressed += InputEvents_ButtonPressed;
+            PlayerEvents.Warped += OnLocationChange;
         }
 
         private void GameEvents_UpdateTick(object sender, EventArgs e)
         {
             if (Game1.player != null && Game1.player.currentLocation != null)
             {
-                CheckLocationChange();
                 CheckNPCEnter();
             }
         }
@@ -53,28 +53,14 @@ namespace M3ales.RelationshipTooltips
             }
         }
         /// <summary>
-        /// Stored value to check if the player has changed locations since the last update
+        /// Called when the player enters a new location (warped)
         /// </summary>
-        private GameLocation currentLocation;
-        /// <summary>
-        /// Checks if the player's location(area) has changed since the last update, and calls OnLocationChange() if it has.
-        /// </summary>
-        private void CheckLocationChange()
-        {
-            if(currentLocation != Game1.player.currentLocation)
-            {
-                OnLocationChange();
-                currentLocation = Game1.player.currentLocation;
-            }
-        }
-        /// <summary>
-        /// Called when the player enters a new location.
-        /// </summary>
-        private void OnLocationChange()
+        private void OnLocationChange(object sender, EventArgsPlayerWarped e)
         {
             cachedNPCs.Clear();
             selectedNPC = null;
             lastCharacterCount = 0;
+            Monitor.Log("Player location changed to '" + e.NewLocation + "'");
         }
         /// <summary>
         /// The last size value of the locationCharacters IList.
@@ -252,6 +238,5 @@ namespace M3ales.RelationshipTooltips
                 Utility.drawTextWithShadow(Game1.spriteBatch, display, Game1.smallFont, new Vector2(boxX + padding.X, boxY + padding.Y), Game1.textColor);
             }
         }
-
     }
 }
