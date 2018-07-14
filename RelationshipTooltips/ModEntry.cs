@@ -245,8 +245,8 @@ namespace M3ales.RelationshipTooltips
                 if (selectedNPCGiftOpinion != NPCGiftOpinionNull)
                 {
                     AddGiftString(ref display);
-                    DrawTooltip(Game1.getMouseX() + offset.X, Game1.getMouseY() + offset.Y, display, npcName);
                 }
+                DrawTooltip(Game1.getMouseX() + offset.X, Game1.getMouseY() + offset.Y, display, npcName);
             }
         }
     }
