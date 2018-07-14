@@ -9,6 +9,7 @@ namespace M3ales.RelationshipTooltips
     public class ModConfig
     {
         public bool displayTooltipByDefault = true;
+        public bool displayGiftInfo = true;
         public Microsoft.Xna.Framework.Input.Keys toggleDisplayKey = Microsoft.Xna.Framework.Input.Keys.F8;
         public string friendshipAcquaintance = "Acquaintance";
         public string friendshipFriend = "Friend";
@@ -22,5 +23,11 @@ namespace M3ales.RelationshipTooltips
         public string marriedFemale = "Wife";
         public string divorcedMale = "Ex-Husband";
         public string divorcedFemale = "Ex-Wife";
+        public string gift = "Gift";
+        public string giftLoves = "Loves";
+        public string giftLikes = "Likes";
+        public string giftNeutral = "Neutral";
+        public string giftDislikes = "Dislikes";
+        public string giftHates = "Hates";
     }
 }
