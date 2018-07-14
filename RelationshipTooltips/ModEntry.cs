@@ -77,10 +77,6 @@ namespace M3ales.RelationshipTooltips
         private NPC selectedNPC;
 
         /// <summary>
-        /// Cached value of an NPC's location
-        /// </summary>
-        private Vector2 tileLocation;
-        /// <summary>
         /// Checks if there is an NPC in the CachedNPCs list, which shares the same tileLocation as the mouse
         /// </summary>
         /// <param name="sender"></param>
