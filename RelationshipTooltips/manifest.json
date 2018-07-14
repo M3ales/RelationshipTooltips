@@ -1,7 +1,7 @@
 {
     "Name": "Relationship Tooltips",
     "Author": "M3ales",
-    "Version": "1.0.0",
+    "Version": "1.0.1-experimental",
     "Description": "Displays NPC relationship tooltip on mouseover, configurable",
     "UniqueID": "M3ales.RelationshipTooltips",
     "EntryDll": "RelationshipTooltips.dll",
