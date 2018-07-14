@@ -23,22 +23,29 @@ namespace M3ales.RelationshipTooltips
         public override void Entry(IModHelper helper)
         {
             config = this.Helper.ReadConfig<ModConfig>();
-            cachedNPCs = new List<NPC>();
             offset = new Point(30, 0);
             padding = new Point(20, 20);
             displayTooltip = config.displayTooltipByDefault;
-            GameEvents.UpdateTick += GameEvents_UpdateTick;
             GameEvents.QuarterSecondTick += CheckForNPCUnderMouse;
             GraphicsEvents.OnPostRenderHudEvent += GraphicsEvents_OnPostRenderHudEvent;
             InputEvents.ButtonPressed += InputEvents_ButtonPressed;
-            PlayerEvents.Warped += OnLocationChange;
         }
 
-        private void GameEvents_UpdateTick(object sender, EventArgs e)
+        private bool notifiedLogger = false;
+        private void CheckForNPCUnderMouse(object sender, EventArgs e)
         {
-            if (Game1.player != null && Game1.player.currentLocation != null)
+            if (Game1.gameMode == Game1.playingGameMode && Game1.player != null && Game1.player.currentLocation != null)
             {
-                CheckNPCEnter();
+                if (NPCUtils.TryGetNPCUnderCursor(out selectedNPC))
+                {
+                    if (!notifiedLogger) {
+                        Monitor.Log(String.Format("NPC '{0}' under cursor.", selectedNPC.Name));
+                        notifiedLogger = true;
+                    }
+                }else
+                {
+                    notifiedLogger = false;
+                }
             }
         }
 
@@ -53,41 +60,6 @@ namespace M3ales.RelationshipTooltips
             }
         }
         /// <summary>
-        /// Called when the player enters a new location (warped)
-        /// </summary>
-        private void OnLocationChange(object sender, EventArgsPlayerWarped e)
-        {
-            cachedNPCs.Clear();
-            selectedNPC = null;
-            lastCharacterCount = 0;
-            Monitor.Log("Player location changed to '" + e.NewLocation + "'");
-        }
-        /// <summary>
-        /// The last size value of the locationCharacters IList.
-        /// </summary>
-        private int lastCharacterCount = 0;
-        /// <summary>
-        /// Cached list of all characters in the current location.
-        /// </summary>
-        private IList<NPC> locationCharacters;
-        /// <summary>
-        /// Checks if an NPC has entered or exited the player's location - this is to cater for NPC schedules.
-        /// </summary>
-        private void CheckNPCEnter()
-        {
-            locationCharacters = Game1.player.currentLocation.getCharacters();
-            if (locationCharacters.Count != lastCharacterCount)
-            {
-                CacheNPCs();
-                if (lastCharacterCount < locationCharacters.Count)
-                    Monitor.Log("NPC entered '" + Game1.player.currentLocation.Name + "', " + cachedNPCs.Count + " NPCs cached.");
-                else
-                    Monitor.Log("NPC left '" + Game1.player.currentLocation.Name + "', " + cachedNPCs.Count + " NPCs cached.");
-                lastCharacterCount = locationCharacters.Count;
-            }
-        }
-
-        /// <summary>
         /// Tooltip display offset
         /// </summary>
         private Point offset;
@@ -99,10 +71,6 @@ namespace M3ales.RelationshipTooltips
         /// Whether the Relationship Tooltip should be displayed or not
         /// </summary>
         private bool displayTooltip;
-        /// <summary>
-        /// List of NPCs which are in the player's current location (excl. Monsters)
-        /// </summary>
-        private List<NPC> cachedNPCs;
         /// <summary>
         /// The NPC currently under the mouse
         /// </summary>
@@ -117,39 +85,6 @@ namespace M3ales.RelationshipTooltips
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CheckForNPCUnderMouse(object sender, EventArgs e)
-        {
-            if (cachedNPCs.Count > 0 && displayTooltip)
-            {
-                foreach (NPC n in cachedNPCs)
-                {
-                    tileLocation = n.getTileLocation();
-                    if (Game1.currentCursorTile ==  tileLocation || Game1.currentCursorTile == (tileLocation - Vector2.UnitY))//tile -1y = 1 tile above
-                    {
-                        selectedNPC = n;
-                        break;
-                    }
-                    else
-                        selectedNPC = null;
-                }
-            }
-        }
-        /// <summary>
-        /// Cache non-monster NPCs in the area.
-        /// </summary>
-        private void CacheNPCs()
-        {
-            if (Game1.gameMode == 3)
-            {
-                foreach (Character c in locationCharacters)
-                {
-                    if (!c.IsMonster && cachedNPCs.Count((x) => x.name == c.name) == 0)
-                    {
-                        cachedNPCs.Add(c as NPC);
-                    }
-                }
-            }
-        }
         /// <summary>
         /// The flavour text that is displayed below an NPC's name on the Tooltip.
         /// </summary>
