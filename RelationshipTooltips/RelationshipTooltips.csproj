@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModEntry.cs" />
+    <Compile Include="NPCUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
