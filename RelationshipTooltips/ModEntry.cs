@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using M3ales.RelationshipTooltips.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -31,6 +32,7 @@ namespace M3ales.RelationshipTooltips
             GameEvents.QuarterSecondTick += CheckForNPCUnderMouse;
             GraphicsEvents.OnPostRenderHudEvent += GraphicsEvents_OnPostRenderHudEvent;
             InputEvents.ButtonPressed += InputEvents_ButtonPressed;
+            t = new Tooltip(0, 0, Color.White, anchor:FrameAnchor.BottomLeft);
         }
         /// <summary>
         /// Tooltip display offset
@@ -119,63 +121,65 @@ namespace M3ales.RelationshipTooltips
             string flavourText = "null";
             if (selectedNPC == null)
                 return "null";
-            FriendshipStatus status = Game1.player.friendshipData[selectedNPC.name].Status;
-            switch (status)
-            {
-                case FriendshipStatus.Dating:
-                    {
-                        flavourText = (selectedNPC.Gender == 0 ? config.datingMale : config.datingFemale) + ": ";
-                        break;
-                    }
-                case FriendshipStatus.Married:
-                    {
-                        flavourText = (selectedNPC.Gender == 0 ? config.marriedMale : config.marriedFemale) + ": ";
-                        break;
-                    }
-                case FriendshipStatus.Engaged:
-                    {
-                        flavourText = (selectedNPC.Gender == 0 ? config.engagedMale : config.engagedFemale) + ": ";
-                        break;
-                    }
-                case FriendshipStatus.Divorced:
-                    {
-                        flavourText = (selectedNPC.Gender == 0 ? config.divorcedMale : config.engagedFemale) + ": ";
-                        break;
-                    }
-                case FriendshipStatus.Friendly:
-                    {
-                        switch (level)
+            if (Game1.player.friendshipData.TryGetValue(selectedNPC.name, out Friendship friendship)){
+                FriendshipStatus status = friendship.Status;
+                switch (status)
+                {
+                    case FriendshipStatus.Dating:
                         {
-                            case 0:
-                            case 1:
-                                {
-                                    flavourText = config.friendshipAcquaintance + ": ";
-                                    break;
-                                }
-                            case 2:
-                            case 3:
-                            case 4:
-                                {
-                                    flavourText = config.friendshipFriend + ": ";
-                                    break;
-                                }
-                            case 5:
-                            case 6:
-                            case 7:
-                                {
-                                    flavourText = config.friendshipCloseFriend + ": ";
-                                    break;
-                                }
-                            case 8:
-                            case 9:
-                            case 10:
-                                {
-                                    flavourText = config.friendshipBestFriend + ": ";
-                                    break;
-                                }
+                            flavourText = (selectedNPC.Gender == 0 ? config.datingMale : config.datingFemale) + ": ";
+                            break;
                         }
-                        break;
-                    }
+                    case FriendshipStatus.Married:
+                        {
+                            flavourText = (selectedNPC.Gender == 0 ? config.marriedMale : config.marriedFemale) + ": ";
+                            break;
+                        }
+                    case FriendshipStatus.Engaged:
+                        {
+                            flavourText = (selectedNPC.Gender == 0 ? config.engagedMale : config.engagedFemale) + ": ";
+                            break;
+                        }
+                    case FriendshipStatus.Divorced:
+                        {
+                            flavourText = (selectedNPC.Gender == 0 ? config.divorcedMale : config.engagedFemale) + ": ";
+                            break;
+                        }
+                    case FriendshipStatus.Friendly:
+                        {
+                            switch (level)
+                            {
+                                case 0:
+                                case 1:
+                                    {
+                                        flavourText = config.friendshipAcquaintance + ": ";
+                                        break;
+                                    }
+                                case 2:
+                                case 3:
+                                case 4:
+                                    {
+                                        flavourText = config.friendshipFriend + ": ";
+                                        break;
+                                    }
+                                case 5:
+                                case 6:
+                                case 7:
+                                    {
+                                        flavourText = config.friendshipCloseFriend + ": ";
+                                        break;
+                                    }
+                                case 8:
+                                case 9:
+                                case 10:
+                                    {
+                                        flavourText = config.friendshipBestFriend + ": ";
+                                        break;
+                                    }
+                            }
+                            break;
+                        }
+                }
             }
             return flavourText + level + "/" + maxLevel + " (" + amount + ")";
         } 
@@ -231,22 +235,30 @@ namespace M3ales.RelationshipTooltips
             Utility.drawTextWithShadow(Game1.spriteBatch, header, Game1.dialogueFont, new Vector2(boxX + (padding.X), boxY + padding.Y), Game1.textColor);
             Utility.drawTextWithShadow(Game1.spriteBatch, text, Game1.smallFont, new Vector2(boxX + (padding.X), boxY + (int)headerSize.Y - 10), Game1.textColor);
         }
-
+        private Tooltip t;
         private void GraphicsEvents_OnPostRenderHudEvent(object sender, EventArgs e)
         {
             if (selectedNPC != null && displayTooltip)
             {
-                string npcName = selectedNPC.displayName;
-                string display = "\n";
-                if (selectedNPC == Game1.player.getSpouse())
-                    display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), 12, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
-                else
-                    display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), 10, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
-                if (selectedNPCGiftOpinion != NPCGiftOpinionNull)
+                string npcName = "???";
+                string display = "";
+                if (Game1.player.friendshipData.ContainsKey(selectedNPC.name))
                 {
-                    AddGiftString(ref display);
+                    npcName = selectedNPC.displayName;
+                    if (selectedNPC == Game1.player.getSpouse())
+                        display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), 12, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
+                    else
+                        display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), 10, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
+                    if (selectedNPCGiftOpinion != NPCGiftOpinionNull)
+                    {
+                        AddGiftString(ref display);
+                    }
                 }
-                DrawTooltip(Game1.getMouseX() + offset.X, Game1.getMouseY() + offset.Y, display, npcName);
+                t.localX = Game1.getMouseX();
+                t.localY = Game1.getMouseY();
+                t.header.text = npcName;
+                t.body.text = display;
+                t.Draw(Game1.spriteBatch, null);
             }
         }
     }

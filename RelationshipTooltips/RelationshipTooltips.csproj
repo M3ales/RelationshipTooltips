@@ -64,10 +64,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\Frame.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModEntry.cs" />
     <Compile Include="NPCUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\IFrameDrawable.cs" />
+    <Compile Include="UI\ShadowText.cs" />
+    <Compile Include="UI\TextureBox.cs" />
+    <Compile Include="UI\Tooltip.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json" />
