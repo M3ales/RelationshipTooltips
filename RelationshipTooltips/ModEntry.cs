@@ -19,6 +19,10 @@ namespace M3ales.RelationshipTooltips
         /// </summary>
         private ModConfig config;
         /// <summary>
+        /// Per Save Gifting Data - what the player has gifted to who in this save
+        /// </summary>
+        private GiftSaveInfo giftSaveInfo;
+        /// <summary>
         /// Mod Entry point - used by SMAPI to initialize before gamestart
         /// </summary>
         /// <param name="helper"></param>
@@ -28,12 +32,37 @@ namespace M3ales.RelationshipTooltips
             offset = new Point(30, 0);
             padding = new Point(20, 20);
             displayTooltip = config.displayTooltipByDefault;
-            displayGiftInfo = config.displayGiftInfo;
             GameEvents.QuarterSecondTick += CheckForNPCUnderMouse;
             GraphicsEvents.OnPostRenderHudEvent += GraphicsEvents_OnPostRenderHudEvent;
             InputEvents.ButtonPressed += InputEvents_ButtonPressed;
             t = new Tooltip(0, 0, Color.White, anchor:FrameAnchor.BottomLeft);
+            SaveEvents.AfterLoad += SaveEvents_AfterLoad;
+            SaveEvents.AfterSave += SaveEvents_AfterSave;
+            InputEvents.ButtonPressed += InputEvents_ButtonPressed1;
         }
+
+        private void InputEvents_ButtonPressed1(object sender, EventArgsInput e)
+        {
+            Monitor.Log($"{e.Button.IsActionButton()} : {selectedNPC != null} : {selectedGift != null} : {e.Cursor.Tile == selectedNPC?.getTileLocation()}");
+            if(e.Button.IsActionButton() && selectedNPC != null && selectedGift != null && e.Cursor.Tile == selectedNPC.getTileLocation())
+            {
+                giftSaveInfo.giftsMade.Add(new GiftSaveInfo.NPCGift(selectedNPC.name, selectedGift.Name));
+            }
+        }
+
+        private void SaveEvents_AfterSave(object sender, EventArgs e)
+        {
+            // write file (if needed)
+            Helper.WriteJsonFile($"{Constants.CurrentSavePath}.json", giftSaveInfo);
+        }
+
+        private void SaveEvents_AfterLoad(object sender, EventArgs e)
+        {
+            // read file
+            giftSaveInfo = this.Helper.ReadJsonFile<GiftSaveInfo>($"{Constants.CurrentSavePath}.json") ?? new GiftSaveInfo();
+            Monitor.Log($"Loaded {Constants.CurrentSavePath}.json");
+        }
+
         /// <summary>
         /// Tooltip display offset
         /// </summary>
@@ -47,17 +76,21 @@ namespace M3ales.RelationshipTooltips
         /// </summary>
         private bool displayTooltip;
         /// <summary>
-        /// Whether to display gifting information
-        /// </summary>
-        private bool displayGiftInfo;
-        /// <summary>
         /// The NPC currently under the mouse
         /// </summary>
         private NPC selectedNPC;
         /// <summary>
+        /// The currently held gift
+        /// </summary>
+        private Item selectedGift;
+        /// <summary>
         /// Not the most elegant solution, but is a value to check against that isn't used by npc_taste
         /// </summary>
-        private const int NPCGiftOpinionNull = -1;
+        private const int NPC_GIFT_OPINION_NULL = -1;
+        /// <summary>
+        /// If the player has never given the gift, and the feature is enabled then this represents an unknown gift response
+        /// </summary>
+        private const int NPC_GIFT_OPINION_UNKNOWN = -2;
         /// <summary>
         /// The NPC's taste value towards an item, Null if = NPCGiftOpinionNull
         /// </summary>
@@ -75,16 +108,24 @@ namespace M3ales.RelationshipTooltips
                     if (firstHoverTick) {
                         Monitor.Log(String.Format("NPC '{0}' under cursor.", selectedNPC.Name));
                     }
-                    if(displayGiftInfo && Game1.player.CurrentItem != null && Game1.player.CurrentItem.canBeGivenAsGift())
+                    if(config.displayGiftInfo && Game1.player.CurrentItem != null && Game1.player.CurrentItem.canBeGivenAsGift())
                     {
-                        selectedNPCGiftOpinion = selectedNPC.getGiftTasteForThisItem(Game1.player.CurrentItem);
+                        selectedGift = Game1.player.CurrentItem;
+                        if (config.playerKnowsAllGifts || giftSaveInfo.PlayerHasGifted(selectedNPC.name, selectedGift.Name))
+                        {
+                            selectedNPCGiftOpinion = selectedNPC.getGiftTasteForThisItem(selectedGift);
+                        }else
+                        {
+                            selectedNPCGiftOpinion = NPC_GIFT_OPINION_UNKNOWN;
+                        }
                         if (firstHoverTick)
                         {
-                            Monitor.Log(String.Format("Gift '{0}' in player's hands.", Game1.player.CurrentItem.Name));
+                            Monitor.Log(String.Format("Gift '{0}' in player's hands. It's response is {1}.", Game1.player.CurrentItem.Name, selectedNPCGiftOpinion == NPC_GIFT_OPINION_UNKNOWN ? "unknown" : "known"));
                         }
                     }else
                     {
-                        selectedNPCGiftOpinion = NPCGiftOpinionNull;
+                        selectedNPCGiftOpinion = NPC_GIFT_OPINION_NULL;
+                        selectedGift = null;
                     }
                     firstHoverTick = false;
                 }
@@ -217,6 +258,11 @@ namespace M3ales.RelationshipTooltips
                         display += config.giftHates;
                         break;
                     }
+                case NPC_GIFT_OPINION_UNKNOWN:
+                    {
+                        display += config.giftUnknown;
+                        break;
+                    }
                 default:
                     {
                         display = "null";
@@ -249,7 +295,7 @@ namespace M3ales.RelationshipTooltips
                         display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), 12, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
                     else
                         display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), 10, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
-                    if (selectedNPCGiftOpinion != NPCGiftOpinionNull)
+                    if (selectedGift != null)
                     {
                         AddGiftString(ref display);
                     }

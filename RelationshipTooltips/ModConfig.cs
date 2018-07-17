@@ -29,5 +29,7 @@ namespace M3ales.RelationshipTooltips
         public string giftNeutral = "Neutral";
         public string giftDislikes = "Dislikes";
         public string giftHates = "Hates";
+        public bool playerKnowsAllGifts = false;
+        public string giftUnknown = "???";
     }
 }
