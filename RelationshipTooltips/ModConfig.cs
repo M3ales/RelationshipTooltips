@@ -53,6 +53,6 @@ namespace M3ales.RelationshipTooltips
         /// <summary>
         /// The required level of friendship before a player is granted full knowledge of all gift responses.
         /// </summary>
-        public int heartLevelToKnowAllGifts = 8;
+        public int heartLevelToKnowAllGifts = 7;
     }
 }

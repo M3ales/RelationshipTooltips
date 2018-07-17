@@ -52,7 +52,7 @@ namespace M3ales.RelationshipTooltips
         {
             if (config.recordGiftInfo) { 
                 Helper.WriteJsonFile($"{Constants.CurrentSavePath}.json", giftSaveInfo);
-                Monitor.Log($"Saved {Constants.CurrentSavePath}.json");
+                Monitor.Log($"Saved {Constants.CurrentSavePath}_RelationshipTooltips_GiftInfo.json");
             }else
             {
                 Monitor.Log("Session data not saved, recordedGiftInfo: " + config.recordGiftInfo);
@@ -69,7 +69,7 @@ namespace M3ales.RelationshipTooltips
             if (config.recordGiftInfo)
             {
                 giftSaveInfo = this.Helper.ReadJsonFile<GiftSaveInfo>($"{Constants.CurrentSavePath}.json") ?? new GiftSaveInfo();
-                Monitor.Log($"Loaded {Constants.CurrentSavePath}.json");
+                Monitor.Log($"Loaded {Constants.CurrentSavePath}_RelationshipTooltips_GiftInfo.json");
             }
             else
                 giftSaveInfo = new GiftSaveInfo();
@@ -118,7 +118,7 @@ namespace M3ales.RelationshipTooltips
         /// <returns>True if exists and of high enough level, false otherwise</returns>
         private bool FriendshipKnowsGifts(NPC npc)
         {
-            return Game1.player.tryGetFriendshipLevelForNPC(npc.name) > config.heartLevelToKnowAllGifts;
+            return Game1.player.tryGetFriendshipLevelForNPC(npc.name) >= config.heartLevelToKnowAllGifts;
         }
         /// <summary>
         /// Checks for NPC under the mouse, if one is found a gift may also be cached if the player is holding an applicable item.
