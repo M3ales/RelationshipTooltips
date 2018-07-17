@@ -118,7 +118,7 @@ namespace M3ales.RelationshipTooltips
         /// <returns>True if exists and of high enough level, false otherwise</returns>
         private bool FriendshipKnowsGifts(NPC npc)
         {
-            return Game1.player.tryGetFriendshipLevelForNPC(npc.name) >= config.heartLevelToKnowAllGifts;
+            return Game1.player.getFriendshipHeartLevelForNPC(npc.name) >= config.heartLevelToKnowAllGifts;
         }
         /// <summary>
         /// Checks for NPC under the mouse, if one is found a gift may also be cached if the player is holding an applicable item.
@@ -146,7 +146,7 @@ namespace M3ales.RelationshipTooltips
                         }
                         if (firstHoverTick)
                         {
-                            Monitor.Log(String.Format("Gift '{0}' in player's hands. It's response is {1}.", Game1.player.CurrentItem.Name, selectedNPCGiftOpinion == NPC_GIFT_OPINION_UNKNOWN ? "unknown" : "known"));
+                            Monitor.Log(String.Format("Gift '{0}' in player's hands. It's response is {1}. :: because of giftSaveInfo?{2}, because of heartlevel? {3}", Game1.player.CurrentItem.Name, selectedNPCGiftOpinion == NPC_GIFT_OPINION_UNKNOWN ? "unknown" : "known", giftSaveInfo.PlayerHasGifted(selectedNPC.name, selectedGift.Name), FriendshipKnowsGifts(selectedNPC)));
                         }
                     }else
                     {
