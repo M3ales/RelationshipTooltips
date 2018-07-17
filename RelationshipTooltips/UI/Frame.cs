@@ -142,14 +142,20 @@ namespace M3ales.RelationshipTooltips.UI
             FrameAnchor temp = anchor;
             FrameAnchor tempParent = parentAnchor;
             int internalYOffset = 0;//Change offsetting here if you want to do interesting layouts
-            //layout is by default just vertical elements
-            foreach(IFrameDrawable d in components)
+                                    //layout is by default just vertical elements
+            if (!CheckFrameOnScreen())
             {
-                if (!CheckFrameOnScreen())
+                anchor = Flip(temp);
+                parentAnchor = Flip(temp);
+                if(!CheckFrameOnScreen(true))
                 {
-                    anchor = Flip(temp);
-                    parentAnchor = Flip(temp);
+                    //problem
+                    anchor = temp;
+                    parentAnchor = tempParent;
                 }
+            }
+            foreach (IFrameDrawable d in components)
+            {
                 d.Draw(b, GlobalX, GlobalY + internalYOffset, this);
                 internalYOffset += d.SizeY;
             }
@@ -160,14 +166,41 @@ namespace M3ales.RelationshipTooltips.UI
             anchor = temp;
             parentAnchor = tempParent;
         }
-        public bool CheckFrameOnScreen()
+        public int edgeTolerance = 30;
+        /// <summary>
+        /// Checks if a frame is within screen bounds, making use of edgeTolerance to pad the screen edges
+        /// </summary>
+        /// <param name="reversed">If the tooltip has been flipped, will likely be helpful if/when vertical flipping is a thing</param>
+        /// <returns>If the frame's bounds are within the screen + edgeTolerance</returns>
+        public bool CheckFrameOnScreen(bool reversed = false)
         {
+            Rectangle screen = Game1.graphics.GraphicsDevice.Viewport.Bounds;
+            int farEdgeX = reversed ? GlobalX - Width : GlobalX + Width;
+            if (GlobalX < -edgeTolerance || farEdgeX > screen.Width + edgeTolerance)
+                return false;
             return true;
         }
+        /// <summary>
+        /// Reflection of FrameAnchor about the Y axis.
+        /// </summary>
+        /// <param name="f">The FrameAnchor to reflect</param>
+        /// <returns>The Reflection about the Y axis.</returns>
         public FrameAnchor Flip(FrameAnchor f)
         {
             switch(f)
             {
+                case FrameAnchor.BottomLeft:
+                    {
+                        return FrameAnchor.BottomRight;
+                    }
+                case FrameAnchor.MidLeft:
+                    {
+                        return FrameAnchor.MidRight;
+                    }
+                case FrameAnchor.TopLeft:
+                    {
+                        return FrameAnchor.TopRight;
+                    }
                 case FrameAnchor.BottomRight:
                     {
                         return FrameAnchor.BottomLeft;
