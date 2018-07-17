@@ -10,6 +10,9 @@ using StardewValley;
 
 namespace M3ales.RelationshipTooltips.UI
 {
+    /// <summary>
+    /// Main layout class, provides layout, anchoring, and relative positioning. Can be used to create content aware (resizable) UI elements relatively easily. Limited for the time being.
+    /// </summary>
     public abstract class Frame
     {
         public int localX;

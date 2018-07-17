@@ -29,6 +29,10 @@ namespace M3ales.RelationshipTooltips
         public override void Entry(IModHelper helper)
         {
             config = this.Helper.ReadConfig<ModConfig>();
+
+            if (!config.recordGiftInfo && config.displayGiftInfo && !config.playerKnowsAllGifts)
+                config.playerKnowsAllGifts = true;//This must be true given the other checks.
+            Helper.WriteConfig<ModConfig>(config);
             offset = new Point(30, 0);
             padding = new Point(20, 20);
             displayTooltip = config.displayTooltipByDefault;
@@ -38,29 +42,37 @@ namespace M3ales.RelationshipTooltips
             t = new Tooltip(0, 0, Color.White, anchor:FrameAnchor.BottomLeft);
             SaveEvents.AfterLoad += SaveEvents_AfterLoad;
             SaveEvents.AfterSave += SaveEvents_AfterSave;
-            InputEvents.ButtonPressed += InputEvents_ButtonPressed1;
         }
-
-        private void InputEvents_ButtonPressed1(object sender, EventArgsInput e)
+        /// <summary>
+        /// Saves the giftSaveInfo if recordGiftInfo is true
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveEvents_AfterSave(object sender, EventArgs e)
         {
-            Monitor.Log($"{e.Button.IsActionButton()} : {selectedNPC != null} : {selectedGift != null} : {e.Cursor.Tile == selectedNPC?.getTileLocation()}");
-            if(e.Button.IsActionButton() && selectedNPC != null && selectedGift != null && e.Cursor.Tile == selectedNPC.getTileLocation())
+            if (config.recordGiftInfo) { 
+                Helper.WriteJsonFile($"{Constants.CurrentSavePath}.json", giftSaveInfo);
+                Monitor.Log($"Saved {Constants.CurrentSavePath}.json");
+            }else
             {
-                giftSaveInfo.giftsMade.Add(new GiftSaveInfo.NPCGift(selectedNPC.name, selectedGift.Name));
+                Monitor.Log("Session data not saved, recordedGiftInfo: " + config.recordGiftInfo);
             }
         }
 
-        private void SaveEvents_AfterSave(object sender, EventArgs e)
-        {
-            // write file (if needed)
-            Helper.WriteJsonFile($"{Constants.CurrentSavePath}.json", giftSaveInfo);
-        }
-
+        /// <summary>
+        /// Loads the giftSaveInfo, if recordGiftInfo is true
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveEvents_AfterLoad(object sender, EventArgs e)
         {
-            // read file
-            giftSaveInfo = this.Helper.ReadJsonFile<GiftSaveInfo>($"{Constants.CurrentSavePath}.json") ?? new GiftSaveInfo();
-            Monitor.Log($"Loaded {Constants.CurrentSavePath}.json");
+            if (config.recordGiftInfo)
+            {
+                giftSaveInfo = this.Helper.ReadJsonFile<GiftSaveInfo>($"{Constants.CurrentSavePath}.json") ?? new GiftSaveInfo();
+                Monitor.Log($"Loaded {Constants.CurrentSavePath}.json");
+            }
+            else
+                giftSaveInfo = new GiftSaveInfo();
         }
 
         /// <summary>
@@ -99,6 +111,20 @@ namespace M3ales.RelationshipTooltips
         /// Used for preventing log spam
         /// </summary>
         private bool firstHoverTick = false;
+        /// <summary>
+        /// If high enough friendship exists, then the player is auto granted knowledge of all applicable gifts
+        /// </summary>
+        /// <param name="npc">The npc with which the player friendship query will be checked</param>
+        /// <returns>True if exists and of high enough level, false otherwise</returns>
+        private bool FriendshipKnowsGifts(NPC npc)
+        {
+            return Game1.player.tryGetFriendshipLevelForNPC(npc.name) > config.heartLevelToKnowAllGifts;
+        }
+        /// <summary>
+        /// Checks for NPC under the mouse, if one is found a gift may also be cached if the player is holding an applicable item.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CheckForNPCUnderMouse(object sender, EventArgs e)
         {
             if (Game1.gameMode == Game1.playingGameMode && Game1.player != null && Game1.player.currentLocation != null)
@@ -111,7 +137,7 @@ namespace M3ales.RelationshipTooltips
                     if(config.displayGiftInfo && Game1.player.CurrentItem != null && Game1.player.CurrentItem.canBeGivenAsGift())
                     {
                         selectedGift = Game1.player.CurrentItem;
-                        if (config.playerKnowsAllGifts || giftSaveInfo.PlayerHasGifted(selectedNPC.name, selectedGift.Name))
+                        if (config.playerKnowsAllGifts || (config.recordGiftInfo && giftSaveInfo.PlayerHasGifted(selectedNPC.name, selectedGift.Name)) || (config.recordGiftInfo && FriendshipKnowsGifts(selectedNPC)))
                         {
                             selectedNPCGiftOpinion = selectedNPC.getGiftTasteForThisItem(selectedGift);
                         }else
@@ -132,17 +158,22 @@ namespace M3ales.RelationshipTooltips
                 else
                 {
                     firstHoverTick = true;
+                    selectedGift = null;
                 }
             }
         }
         /// <summary>
-        /// Handles Keyboard Input to Toggle Display of Tooltip
+        /// Handles Keyboard Input to Toggle Display of Tooltip, and the gifting of items (hackish solution, but it works)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void InputEvents_ButtonPressed(object sender, EventArgsInput e)
         {
-            if (e.Button.TryGetStardewInput(out InputButton k))
+            if (config.recordGiftInfo && e.Button.IsActionButton() && selectedNPC != null && selectedGift != null && e.Cursor.Tile == selectedNPC.getTileLocation())
+            {//not great solution but these are conditions needed to work as far as I can see.
+                giftSaveInfo.giftsMade.Add(new GiftSaveInfo.NPCGift(selectedNPC.name, selectedGift.Name));
+            }
+            else if (e.Button.TryGetStardewInput(out InputButton k))
             {
                 if (k.key == config.toggleDisplayKey)
                 {
@@ -281,7 +312,15 @@ namespace M3ales.RelationshipTooltips
             Utility.drawTextWithShadow(Game1.spriteBatch, header, Game1.dialogueFont, new Vector2(boxX + (padding.X), boxY + padding.Y), Game1.textColor);
             Utility.drawTextWithShadow(Game1.spriteBatch, text, Game1.smallFont, new Vector2(boxX + (padding.X), boxY + (int)headerSize.Y - 10), Game1.textColor);
         }
+        /// <summary>
+        /// The relationship tooltip to display
+        /// </summary>
         private Tooltip t;
+        /// <summary>
+        /// Draws the Tooltip over UI
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GraphicsEvents_OnPostRenderHudEvent(object sender, EventArgs e)
         {
             if (selectedNPC != null && displayTooltip)

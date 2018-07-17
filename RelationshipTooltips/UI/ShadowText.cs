@@ -9,6 +9,9 @@ using StardewValley;
 
 namespace M3ales.RelationshipTooltips.UI
 {
+    /// <summary>
+    /// Text with a dropshadow
+    /// </summary>
     public class ShadowText : IFrameDrawable
     {
         public ShadowText(string text, SpriteFont font, Color color, int xPadding = 0, int yPadding = 0)

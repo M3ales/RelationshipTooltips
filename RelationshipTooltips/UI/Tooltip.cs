@@ -8,6 +8,9 @@ using StardewValley;
 
 namespace M3ales.RelationshipTooltips.UI
 {
+    /// <summary>
+    /// A wrapper using Frame's positioning and anchoring logic to draw a tooltip
+    /// </summary>
     public class Tooltip : Frame
     {
         public Tooltip(int x, int y, Color color, FrameAnchor anchor = FrameAnchor.TopLeft, FrameAnchor parentAnchor = FrameAnchor.TopLeft, List<IFrameDrawable> components = null, Frame parent = null,string header = "", string text = "") : base(x, y, color, anchor, parentAnchor, components, parent)

@@ -9,6 +9,9 @@ using StardewValley.Menus;
 
 namespace M3ales.RelationshipTooltips.UI
 {
+    /// <summary>
+    /// The default background texture, usually used to render UI or Tooltips
+    /// </summary>
     class TextureBox : IFrameDrawable
     {
         Color color;
