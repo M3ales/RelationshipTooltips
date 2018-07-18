@@ -137,7 +137,7 @@ namespace M3ales.RelationshipTooltips
                     if(config.displayGiftInfo && Game1.player.CurrentItem != null && Game1.player.CurrentItem.canBeGivenAsGift())
                     {
                         selectedGift = Game1.player.CurrentItem;
-                        if (config.playerKnowsAllGifts || (config.recordGiftInfo && giftSaveInfo.PlayerHasGifted(selectedNPC.name, selectedGift.Name)) || (config.recordGiftInfo && FriendshipKnowsGifts(selectedNPC)))
+                        if (config.playerKnowsAllGifts || (config.recordGiftInfo && !giftSaveInfo.PlayerHasGifted(selectedNPC.name, selectedGift.Name)) || (config.recordGiftInfo && FriendshipKnowsGifts(selectedNPC)))
                         {
                             selectedNPCGiftOpinion = selectedNPC.getGiftTasteForThisItem(selectedGift);
                         }else
@@ -169,9 +169,15 @@ namespace M3ales.RelationshipTooltips
         /// <param name="e"></param>
         private void InputEvents_ButtonPressed(object sender, EventArgsInput e)
         {
-            if (config.recordGiftInfo && e.Button.IsActionButton() && selectedNPC != null && selectedGift != null && e.Cursor.Tile == selectedNPC.getTileLocation())
+            if (config.recordGiftInfo && e.Button.IsActionButton() && selectedNPC != null && selectedGift != null)
             {//not great solution but these are conditions needed to work as far as I can see.
-                giftSaveInfo.giftsMade.Add(new GiftSaveInfo.NPCGift(selectedNPC.name, selectedGift.Name));
+                if (Game1.player.friendshipData.ContainsKey(selectedNPC.name)){
+                    if (Game1.player.friendshipData[selectedNPC.name].GiftsToday == 0)
+                    {
+                        Monitor.Log($"Recorded gift '{selectedGift.Name}' to '{selectedNPC.Name}'");
+                        giftSaveInfo.AddGift(selectedNPC, selectedGift);
+                    }
+                }
             }
             else if (e.Button.TryGetStardewInput(out InputButton k))
             {

@@ -15,6 +15,12 @@ namespace M3ales.RelationshipTooltips
         /// Gifts that have been recorded as given
         /// </summary>
         public List<NPCGift> giftsMade;
+        public void AddGift(StardewValley.NPC npc, StardewValley.Item gift)
+        {
+            NPCGift equivalent = new NPCGift(npc.name, gift.Name);
+            if (!giftsMade.Contains(equivalent))
+                giftsMade.Add(equivalent);
+        }
         public GiftSaveInfo()
         {
             giftsMade = new List<NPCGift>();
