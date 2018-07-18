@@ -137,7 +137,7 @@ namespace M3ales.RelationshipTooltips
                     if(config.displayGiftInfo && Game1.player.CurrentItem != null && Game1.player.CurrentItem.canBeGivenAsGift())
                     {
                         selectedGift = Game1.player.CurrentItem;
-                        if (config.playerKnowsAllGifts || (config.recordGiftInfo && !giftSaveInfo.PlayerHasGifted(selectedNPC.name, selectedGift.Name)) || (config.recordGiftInfo && FriendshipKnowsGifts(selectedNPC)))
+                        if (config.playerKnowsAllGifts || (config.recordGiftInfo && giftSaveInfo.PlayerHasGifted(selectedNPC.name, selectedGift.Name)) || (config.recordGiftInfo && FriendshipKnowsGifts(selectedNPC)))
                         {
                             selectedNPCGiftOpinion = selectedNPC.getGiftTasteForThisItem(selectedGift);
                         }else
