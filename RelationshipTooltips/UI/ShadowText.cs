@@ -33,7 +33,7 @@ namespace M3ales.RelationshipTooltips.UI
             get
             {
                 if (font != null)
-                    return (int)(font == Game1.dialogueFont ? 0.25f* font.MeasureString(text).X : font.MeasureString(text).X) + (xPadding*2);
+                    return (int)(font == Game1.dialogueFont ? 1f* font.MeasureString(text).X : font.MeasureString(text).X) + (xPadding*2);
                 return 0;
             }
         }
@@ -43,7 +43,7 @@ namespace M3ales.RelationshipTooltips.UI
             get
             {
                 if (font != null)
-                    return (int)(font == Game1.dialogueFont ? 0.1f* font.MeasureString(text).Y : font.MeasureString(text).Y) + (yPadding*2);
+                    return (int)(font == Game1.dialogueFont ? 0.25f* font.MeasureString(text).Y : font.MeasureString(text).Y) + (yPadding*2);
                 return 0;
             }
         }
