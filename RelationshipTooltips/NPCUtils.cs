@@ -49,5 +49,10 @@ namespace M3ales.RelationshipTooltips
             npc = GetNPCUnderCursor();
             return npc != null;
         }
+        public enum GiftResponse
+        {
+            Null = -1, Hate = NPC.gift_taste_hate, Dislike = NPC.gift_taste_dislike,
+            Neutral = NPC.gift_taste_neutral, Like = NPC.gift_taste_like, Love = NPC.gift_taste_love
+        }
     }
 }
