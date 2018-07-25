@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace M3ales.RelationshipTooltips.UI
 {
+    /// <summary>
+    /// All drawable elements which are rendered onto a frame
+    /// </summary>
     public interface IFrameDrawable
     {
         void Draw(SpriteBatch b, int x, int y, Frame parentFrame);

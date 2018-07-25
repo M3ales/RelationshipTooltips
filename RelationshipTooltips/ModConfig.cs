@@ -8,8 +8,21 @@ namespace M3ales.RelationshipTooltips
 {
     public class ModConfig
     {
+        /// <summary>
+        /// The starting value of displayTooltip
+        /// </summary>
         public bool displayTooltipByDefault = true;
+        /// <summary>
+        /// 
+        /// </summary>
         public bool displayGiftInfo = true;
+        /// <summary>
+        /// Whether to save/listen for gifting events
+        /// </summary>
+        public bool recordGiftInfo = true;
+        /// <summary>
+        /// The key used to toggle the UI display of the Relationship Tooltips tooltip.
+        /// </summary>
         public Microsoft.Xna.Framework.Input.Keys toggleDisplayKey = Microsoft.Xna.Framework.Input.Keys.F8;
         public string friendshipAcquaintance = "Acquaintance";
         public string friendshipFriend = "Friend";
@@ -29,5 +42,17 @@ namespace M3ales.RelationshipTooltips
         public string giftNeutral = "Neutral";
         public string giftDislikes = "Dislikes";
         public string giftHates = "Hates";
+        /// <summary>
+        /// If true, will bypass all checks on if the player knows the gift's response.
+        /// </summary>
+        public bool playerKnowsAllGifts = false;
+        /// <summary>
+        /// Text displayed on the tooltip when the gift response is unknown.
+        /// </summary>
+        public string giftUnknown = "???";
+        /// <summary>
+        /// The required level of friendship before a player is granted full knowledge of all gift responses.
+        /// </summary>
+        public int heartLevelToKnowAllGifts = 7;
     }
 }

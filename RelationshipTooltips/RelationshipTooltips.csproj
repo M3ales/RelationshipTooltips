@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GiftSaveInfo.cs" />
     <Compile Include="UI\Frame.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModEntry.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="UI\ShadowText.cs" />
     <Compile Include="UI\TextureBox.cs" />
     <Compile Include="UI\Tooltip.cs" />
+    <Compile Include="UI\TooltipContent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json" />

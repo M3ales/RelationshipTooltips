@@ -9,28 +9,28 @@ using StardewValley;
 
 namespace M3ales.RelationshipTooltips.UI
 {
+    /// <summary>
+    /// Text with a dropshadow
+    /// </summary>
     public class ShadowText : IFrameDrawable
     {
-        public ShadowText(string text, SpriteFont font, Color color, int xPadding = 0, int yPadding = 0)
+        public ShadowText(string text, SpriteFont font, Color color)
         {
             this.text = text;
             this.font = font;
             this.color = color;
-            this.xPadding = xPadding;
-            this.yPadding = yPadding;
         }
         public SpriteFont font;
         public Color color;
         public string text;
-        public int xPadding;
-        public int yPadding;
-
         public int SizeX
         {
             get
             {
-                if (font != null)
-                    return (int)(font == Game1.dialogueFont ? 0.25f* font.MeasureString(text).X : font.MeasureString(text).X) + (xPadding*2);
+                if (font != null && text != "")
+                {
+                    return (int)(font.MeasureString(text).X);
+                }
                 return 0;
             }
         }
@@ -39,15 +39,17 @@ namespace M3ales.RelationshipTooltips.UI
         {
             get
             {
-                if (font != null)
-                    return (int)(font == Game1.dialogueFont ? 0.1f* font.MeasureString(text).Y : font.MeasureString(text).Y) + (yPadding*2);
+                if (font != null && text != "")
+                {
+                    return (int)(font.MeasureString(text).Y);
+                }
                 return 0;
             }
         }
 
         public void Draw(SpriteBatch b, int x, int y, Frame parentFrame)
         {
-            Utility.drawTextWithShadow(b, text, font, new Vector2(x + xPadding, y + yPadding), this.color);
+            Utility.drawTextWithShadow(b, text, font, new Vector2(x, y), this.color);
         }
     }
 }
