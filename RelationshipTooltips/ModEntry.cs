@@ -55,15 +55,24 @@ namespace M3ales.RelationshipTooltips
         {
             if (config.recordGiftInfo)
             {
-                Helper.WriteJsonFile($"{Constants.CurrentSavePath}.json", giftSaveInfo);
-                Monitor.Log($"Saved {Constants.CurrentSavePath}_RelationshipTooltips_GiftInfo.json");
+                Helper.WriteJsonFile(GiftInfoPath, giftSaveInfo);
+                Monitor.Log($"Saved {GiftInfoPath}");
             }
             else
             {
                 Monitor.Log("Session data not saved, recordedGiftInfo: " + config.recordGiftInfo);
             }
         }
-
+        /// <summary>
+        /// The path to the current save's GiftInfo json
+        /// </summary>
+        private string GiftInfoPath
+        {
+            get
+            {
+                return $"{Constants.CurrentSavePath}\\{Constants.SaveFolderName}_RelationshipTooltips_GiftInfo.json";
+            }
+        }
         /// <summary>
         /// Loads the giftSaveInfo, if recordGiftInfo is true
         /// </summary>
@@ -73,8 +82,8 @@ namespace M3ales.RelationshipTooltips
         {
             if (config.recordGiftInfo)
             {
-                giftSaveInfo = this.Helper.ReadJsonFile<GiftSaveInfo>($"{Constants.CurrentSavePath}.json") ?? new GiftSaveInfo();
-                Monitor.Log($"Loaded {Constants.CurrentSavePath}_RelationshipTooltips_GiftInfo.json");
+                giftSaveInfo = this.Helper.ReadJsonFile<GiftSaveInfo>(GiftInfoPath) ?? new GiftSaveInfo();
+                Monitor.Log($"Loaded {GiftInfoPath}");
             }
             else
                 giftSaveInfo = new GiftSaveInfo();
@@ -122,8 +131,16 @@ namespace M3ales.RelationshipTooltips
         {
             return Game1.player.getFriendshipHeartLevelForNPC(npc.name) >= config.heartLevelToKnowAllGifts;
         }
+        /// <summary>
+        /// Is the gift being given part of an item delivery quest?
+        /// </summary>
+        /// <param name="target">NPC to be gifted</param>
+        /// <param name="heldItem">Item currently held (must be a gift)</param>
+        /// <returns>If the item is part of a quest delivery - true, else false</returns>
         public bool IsItemQuestGift(NPC target, Item heldItem)
         {
+            if (target == null || heldItem == null)
+                return false;
             foreach (Quest q in Game1.player.questLog)
             {
                 if (q.questType == Quest.type_itemDelivery)
@@ -131,7 +148,7 @@ namespace M3ales.RelationshipTooltips
                     ItemDeliveryQuest quest = q as ItemDeliveryQuest;
                     if (quest == null)
                         break;
-                    if (quest.target.Value == target.Name && quest.deliveryItem.Value.Name == heldItem.Name)
+                    if (quest.target?.Value == target.Name && quest.item.Value == heldItem.ParentSheetIndex)
                     {
                         return true;
                     }
@@ -205,7 +222,7 @@ namespace M3ales.RelationshipTooltips
         /// <param name="e"></param>
         private void InputEvents_ButtonPressed(object sender, EventArgsInput e)
         {
-            if (config.recordGiftInfo && e.Button.IsActionButton() && selectedNPC != null && selectedGift != null)
+            if (config.recordGiftInfo && (e.Button.IsActionButton() || e.Button.IsUseToolButton()) && selectedNPC != null && selectedGift != null)
             {//not great solution but these are conditions needed to work as far as I can see.
                 if (Game1.player.friendshipData.ContainsKey(selectedNPC.name))
                 {
@@ -341,7 +358,7 @@ namespace M3ales.RelationshipTooltips
                     }
                 default:
                     {
-                        display = "null";
+                        display = $"null({selectedNPCGiftOpinion})";
                         break;
                     }
             }
