@@ -74,6 +74,7 @@
     <Compile Include="UI\ShadowText.cs" />
     <Compile Include="UI\TextureBox.cs" />
     <Compile Include="UI\Tooltip.cs" />
+    <Compile Include="UI\TooltipContent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json" />

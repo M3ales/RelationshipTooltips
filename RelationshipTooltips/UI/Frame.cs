@@ -123,7 +123,7 @@ namespace M3ales.RelationshipTooltips.UI
             {
                 if (components != null)
                     if (components.Count > 0)
-                        return components.Max(x=>x.SizeX);
+                        return components.Max(c=> c.SizeX);
                 return 0;
             }
         }

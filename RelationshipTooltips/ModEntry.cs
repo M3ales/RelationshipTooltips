@@ -11,6 +11,8 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Quests;
 using StardewValley.Menus;
+using StardewValley.Characters;
+
 namespace M3ales.RelationshipTooltips
 {
     public class ModEntry : Mod
@@ -99,18 +101,14 @@ namespace M3ales.RelationshipTooltips
         /// </summary>
         private Item selectedGift;
         /// <summary>
-        /// Not the most elegant solution, but is a value to check against that isn't used by npc_taste
-        /// </summary>
-        private const int NPC_GIFT_OPINION_NULL = -1;
-        /// <summary>
         /// If the player has never given the gift, and the feature is enabled then this represents an unknown gift response
         /// </summary>
         private const int NPC_GIFT_OPINION_UNKNOWN = -2;
         private const int NPC_GIFT_OPINION_QUEST_ITEM = -3;
         /// <summary>
-        /// The NPC's taste value towards an item, Null if = NPCGiftOpinionNull
+        /// The NPC's taste value towards an item, nullable
         /// </summary>
-        private int selectedNPCGiftOpinion;
+        private int? selectedNPCGiftOpinion;
         /// <summary>
         /// Used for preventing log spam
         /// </summary>
@@ -156,7 +154,7 @@ namespace M3ales.RelationshipTooltips
                     {
                         selectedNPC = null;
                         selectedGift = null;
-                        selectedNPCGiftOpinion = NPC_GIFT_OPINION_NULL;
+                        selectedNPCGiftOpinion = null;
                         return;
                     }
                     if (firstHoverTick)
@@ -188,7 +186,7 @@ namespace M3ales.RelationshipTooltips
                     }
                     else
                     {
-                        selectedNPCGiftOpinion = NPC_GIFT_OPINION_NULL;
+                        selectedNPCGiftOpinion = null;
                         selectedGift = null;
                     }
                     firstHoverTick = false;
@@ -310,28 +308,28 @@ namespace M3ales.RelationshipTooltips
             display += "\n" + config.gift + ": ";
             switch (selectedNPCGiftOpinion)
             {
-                case NPC.gift_taste_love:
+                case (int)NPCUtils.GiftResponse.Love:
                     {
                         display += config.giftLoves;
                         break;
                     }
-                case NPC.gift_taste_like:
+                case (int)NPCUtils.GiftResponse.Like:
                 case NPC_GIFT_OPINION_QUEST_ITEM:
                     {
                         display += config.giftLikes;
                         break;
                     }
-                case NPC.gift_taste_neutral:
+                case (int)NPCUtils.GiftResponse.Neutral:
                     {
                         display += config.giftNeutral;
                         break;
                     }
-                case NPC.gift_taste_dislike:
+                case (int)NPCUtils.GiftResponse.Dislike:
                     {
                         display += config.giftDislikes;
                         break;
                     }
-                case NPC.gift_taste_hate:
+                case (int)NPCUtils.GiftResponse.Hate:
                     {
                         display += config.giftHates;
                         break;
@@ -388,7 +386,11 @@ namespace M3ales.RelationshipTooltips
                 }
                 else if (selectedNPC.Name == Game1.player.getPetName())
                 {
+                    // your pet
                     npcName = Game1.player.getPetDisplayName();
+                }else if(selectedNPC is Pet)
+                {
+                    npcName = selectedNPC.displayName;
                 }
                 t.localX = Game1.getMouseX();
                 t.localY = Game1.getMouseY();

@@ -15,15 +15,23 @@ namespace M3ales.RelationshipTooltips.UI
     {
         public Tooltip(int x, int y, Color color, FrameAnchor anchor = FrameAnchor.TopLeft, FrameAnchor parentAnchor = FrameAnchor.TopLeft, List<IFrameDrawable> components = null, Frame parent = null,string header = "", string text = "") : base(x, y, color, anchor, parentAnchor, components, parent)
         {
-            this.header = new ShadowText(text, Game1.dialogueFont, Game1.textColor, 20, 20);
-            this.body = new ShadowText(text, Game1.smallFont, Game1.textColor, 20, 20);
+            this.header = new ShadowText(text, Game1.dialogueFont, Game1.textColor);
+            this.body = new ShadowText(text, Game1.smallFont, Game1.textColor);
+            this.content = new TooltipContent(x, y, color, FrameAnchor.TopLeft, parentAnchor, parent: null, xPadding: 20, yPadding: 20)
+            {
+                components = new List<IFrameDrawable>()
+                {
+                    this.header,
+                    this.body
+                }
+            };
             this.components = new List<IFrameDrawable>()
             {
                 new TextureBox(color),
-                this.header,
-                this.body
+                content
             };
         }
+        public TooltipContent content;
         public ShadowText header;
         public ShadowText body;
     }
