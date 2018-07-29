@@ -63,6 +63,24 @@ namespace M3ales.RelationshipTooltips
                 Monitor.Log("Session data not saved, recordedGiftInfo: " + config.recordGiftInfo);
             }
         }
+        private bool CheckForPlayer(out Farmer player)
+        {
+            player = null;
+            if (!Game1.IsMultiplayer || Game1.getOnlineFarmers().Count() < 2)
+                return false;
+            foreach(Farmer f in Game1.getOnlineFarmers())
+            {
+                if (f == Game1.player)
+                    return false;
+                Vector2 tileLoc = f.getTileLocation();
+                if(Game1.currentCursorTile == tileLoc || Game1.currentCursorTile == (tileLoc - Vector2.UnitY))
+                {
+                    player = f;
+                    return true;
+                }
+            }
+            return false;
+        }
         /// <summary>
         /// The path to the current save's GiftInfo json
         /// </summary>
@@ -109,6 +127,10 @@ namespace M3ales.RelationshipTooltips
         /// The currently held gift
         /// </summary>
         private Item selectedGift;
+        /// <summary>
+        /// The currently selected player
+        /// </summary>
+        private Farmer selectedPlayer;//Todo, change to Character, and merge with selectedNPC
         /// <summary>
         /// If the player has never given the gift, and the feature is enabled then this represents an unknown gift response
         /// </summary>
@@ -165,8 +187,19 @@ namespace M3ales.RelationshipTooltips
         {
             if (Game1.gameMode == Game1.playingGameMode && Game1.player != null && Game1.player.currentLocation != null)
             {
-                if (NPCUtils.TryGetNPCUnderCursor(out selectedNPC))
+                if (CheckForPlayer(out selectedPlayer))
                 {
+                    selectedNPCGiftOpinion = null;
+                    selectedNPC = null;
+                    selectedGift = null;
+                    if (firstHoverTick)
+                    {
+                        Monitor.Log(String.Format("Player '{0}' under cursor.", selectedPlayer.Name));
+                    }
+                }
+                else if (NPCUtils.TryGetNPCUnderCursor(out selectedNPC))
+                {
+                    selectedPlayer = null;
                     if (selectedNPC.IsMonster)
                     {
                         selectedNPC = null;
@@ -260,22 +293,22 @@ namespace M3ales.RelationshipTooltips
                 {
                     case FriendshipStatus.Dating:
                         {
-                            flavourText = (selectedNPC.Gender == 0 ? config.datingMale : config.datingFemale) + ": ";
+                            flavourText = config.GetDatingString(selectedNPC.Gender) + ": ";
                             break;
                         }
                     case FriendshipStatus.Married:
                         {
-                            flavourText = (selectedNPC.Gender == 0 ? config.marriedMale : config.marriedFemale) + ": ";
+                            flavourText = config.GetMarriageString(selectedNPC.Gender) + ": ";
                             break;
                         }
                     case FriendshipStatus.Engaged:
                         {
-                            flavourText = (selectedNPC.Gender == 0 ? config.engagedMale : config.engagedFemale) + ": ";
+                            flavourText = config.GetEngagedString(selectedNPC.Gender) + ": ";
                             break;
                         }
                     case FriendshipStatus.Divorced:
                         {
-                            flavourText = (selectedNPC.Gender == 0 ? config.divorcedMale : config.engagedFemale) + ": ";
+                            flavourText = config.GetDivorcedString(selectedNPC.Gender) + ": ";
                             break;
                         }
                     case FriendshipStatus.Friendly:
@@ -385,35 +418,57 @@ namespace M3ales.RelationshipTooltips
         /// <param name="e"></param>
         private void GraphicsEvents_OnPostRenderHudEvent(object sender, EventArgs e)
         {
-            if (selectedNPC != null && displayTooltip)
+            if (displayTooltip)
             {
                 string npcName = "???";
                 string display = "";
-                if (Game1.player.friendshipData.ContainsKey(selectedNPC.name))
+                if (selectedPlayer != null)
                 {
-                    npcName = selectedNPC.displayName;
-                    if (selectedNPC == Game1.player.getSpouse())
-                        display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), 12, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
-                    else
-                        display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), 10, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
-                    if (selectedGift != null)
+                    npcName = selectedPlayer.Name;
+                    if(selectedPlayer.isMarried())
                     {
-                        AddGiftString(ref display);
+                        if(Game1.player.spouse == selectedPlayer.Name)
+                        {
+                            display = config.GetMarriageString(selectedPlayer.IsMale);
+                        }
                     }
+                    t.localX = Game1.getMouseX();
+                    t.localY = Game1.getMouseY();
+                    t.header.text = npcName;
+                    t.body.text = display;
+                    t.Draw(Game1.spriteBatch, null);
                 }
-                else if (selectedNPC.Name == Game1.player.getPetName())
+                else if (selectedNPC != null)
                 {
-                    // your pet
-                    npcName = Game1.player.getPetDisplayName();
-                }else if(selectedNPC is Pet)
-                {
-                    npcName = selectedNPC.displayName;
+                    if (Game1.player.friendshipData.ContainsKey(selectedNPC.name))
+                    {
+                        npcName = selectedNPC.displayName;
+                        int numHearts = 10;//default is 10 for friends
+                        if (selectedNPC == Game1.player.getSpouse())
+                            numHearts = 12;
+                        display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), numHearts, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
+                        if (selectedGift != null)
+                        {
+                            AddGiftString(ref display);
+                        }
+                    }
+                    else if (selectedNPC.Name == Game1.player.getPetName())
+                    {
+                        // your pet
+                        npcName = Game1.player.getPetDisplayName();
+                        if (Game1.player.Name == "Darkosto")
+                            display = "(No I am not dead)";
+                    }
+                    else if (selectedNPC is Pet)
+                    {
+                        npcName = selectedNPC.displayName;
+                    }
+                    t.localX = Game1.getMouseX();
+                    t.localY = Game1.getMouseY();
+                    t.header.text = npcName;
+                    t.body.text = display;
+                    t.Draw(Game1.spriteBatch, null);
                 }
-                t.localX = Game1.getMouseX();
-                t.localY = Game1.getMouseY();
-                t.header.text = npcName;
-                t.body.text = display;
-                t.Draw(Game1.spriteBatch, null);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StardewValley;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,5 +55,38 @@ namespace M3ales.RelationshipTooltips
         /// The required level of friendship before a player is granted full knowledge of all gift responses.
         /// </summary>
         public int heartLevelToKnowAllGifts = 7;
+
+        public string GetEngagedString(int Gender)
+        {
+            return GetEngagedString(Gender == NPC.male);
+        }
+        public string GetEngagedString(bool isMale)
+        {
+            return isMale ? engagedMale : engagedFemale;
+        }
+        public string GetDatingString(int Gender)
+        {
+            return GetDatingString(Gender == NPC.male);
+        }
+        public string GetDatingString(bool isMale)
+        {
+            return isMale ? datingMale : datingFemale;
+        }
+        public string GetMarriageString(int Gender)
+        {
+            return GetMarriageString(Gender == NPC.male);
+        }
+        public string GetMarriageString(bool isMale)
+        {
+            return isMale ? marriedMale : marriedFemale;
+        }
+        public string GetDivorcedString(int Gender)
+        {
+            return GetDivorcedString(Gender == NPC.male);
+        }
+        public string GetDivorcedString(bool isMale)
+        {
+            return isMale ? divorcedMale : divorcedFemale;
+        }
     }
 }
