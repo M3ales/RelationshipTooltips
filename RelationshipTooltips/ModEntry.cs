@@ -489,8 +489,8 @@ namespace M3ales.RelationshipTooltips
                     {
                         // your pet
                         npcName = Game1.player.getPetDisplayName();
-                        if (Game1.player.Name == "Darkosto")
-                            display = "(No I am not dead)";
+                        if (Game1.player.Name.ToLower() == "darkosto" && Game1.player.getPetDisplayName().ToLower() == "drakkensong")
+                            display = "(not dead)";
                     }
                     else if (selectedNPC is Pet)
                     {
