@@ -68,12 +68,12 @@ namespace M3ales.RelationshipTooltips
             player = null;
             if (!Game1.IsMultiplayer || Game1.getOnlineFarmers().Count() < 2)
                 return false;
-            foreach(Farmer f in Game1.getOnlineFarmers())
+            foreach (Farmer f in Game1.getOnlineFarmers())
             {
                 if (f == Game1.player)
                     return false;
                 Vector2 tileLoc = f.getTileLocation();
-                if(Game1.currentCursorTile == tileLoc || Game1.currentCursorTile == (tileLoc - Vector2.UnitY))
+                if (Game1.currentCursorTile == tileLoc || Game1.currentCursorTile == (tileLoc - Vector2.UnitY))
                 {
                     player = f;
                     return true;
@@ -226,7 +226,7 @@ namespace M3ales.RelationshipTooltips
                             else
                             {
                                 selectedNPCGiftOpinion = NPC_GIFT_OPINION_UNKNOWN;
-                            }   
+                            }
                         }
                         else
                         {
@@ -244,14 +244,17 @@ namespace M3ales.RelationshipTooltips
                     }
                     firstHoverTick = false;
                 }
-                else if(CheckForFarmAnimal(out selectedAnimal))
+                else if (CheckForFarmAnimal(out selectedAnimal))
                 {
                     selectedNPCGiftOpinion = null;
                     selectedNPC = null;
                     selectedGift = null;
                     selectedPlayer = null;
                     if (firstHoverTick)
+                    {
                         Monitor.Log($"FarmAnimal '{selectedAnimal.Name}' under cursor");
+                        firstHoverTick = false;
+                    }
                 }
                 else
                 {
@@ -263,12 +266,17 @@ namespace M3ales.RelationshipTooltips
         public bool CheckForFarmAnimal(out FarmAnimal animal)
         {
             animal = null;
-            foreach(Character c in Game1.player.currentLocation.getCharacters())
+            if (Game1.player.currentLocation is AnimalHouse)
             {
-                if(c.getTileLocation() == Game1.currentCursorTile && c is FarmAnimal)
+                foreach (FarmAnimal a in (Game1.player.currentLocation as AnimalHouse).animals.Values)
                 {
-                    animal = c as FarmAnimal;
-                    return true;
+                    Rectangle r = a.GetBoundingBox();
+                    Rectangle m = new Rectangle(Game1.getMouseX() + Game1.viewport.X, Game1.getMouseY() + Game1.viewport.Y, 2*Game1.tileSize/3, 2*Game1.tileSize / 3);
+                    if (m.Intersects(r))
+                    {
+                        animal = a;
+                        return true;
+                    }
                 }
             }
             return false;
@@ -501,6 +509,7 @@ namespace M3ales.RelationshipTooltips
                     {
                         npcName = selectedAnimal.displayName;
                         display = "Happiness: " + selectedAnimal.happiness;
+                        display = "Friendship: " + selectedAnimal.friendshipTowardFarmer/200 + "/5";
                         display += "\n" + config.GetAnimalPetString(selectedAnimal.wasPet);
                         t.localX = Game1.getMouseX();
                         t.localY = Game1.getMouseY();
