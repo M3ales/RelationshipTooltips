@@ -43,6 +43,12 @@ namespace M3ales.RelationshipTooltips
         public string giftNeutral = "Neutral";
         public string giftDislikes = "Dislikes";
         public string giftHates = "Hates";
+        public string animalPetted = "Is happy to have seen you.";
+        public string animalNotPetted = "Needs some love.";
+        public string GetAnimalPetString(bool petted)
+        {
+            return petted ? animalPetted : animalNotPetted;
+        }
         /// <summary>
         /// If true, will bypass all checks on if the player knows the gift's response.
         /// </summary>

@@ -39,7 +39,7 @@ namespace M3ales.RelationshipTooltips
             offset = new Point(30, 0);
             padding = new Point(20, 20);
             displayTooltip = config.displayTooltipByDefault;
-            GameEvents.QuarterSecondTick += CheckForNPCUnderMouse;
+            GameEvents.QuarterSecondTick += CheckUnderMouse;
             GraphicsEvents.OnPostRenderHudEvent += GraphicsEvents_OnPostRenderHudEvent;
             InputEvents.ButtonPressed += InputEvents_ButtonPressed;
             t = new Tooltip(0, 0, Color.White, anchor: FrameAnchor.BottomLeft);
@@ -88,7 +88,7 @@ namespace M3ales.RelationshipTooltips
         {
             get
             {
-                return $"{Constants.CurrentSavePath}\\{Constants.SaveFolderName}_RelationshipTooltips_GiftInfo.json";
+                return $"{Constants.CurrentSavePath}\\{Constants.SaveFolderName}_{this.ModManifest.Name}_GiftInfo.json";
             }
         }
         /// <summary>
@@ -131,6 +131,7 @@ namespace M3ales.RelationshipTooltips
         /// The currently selected player
         /// </summary>
         private Farmer selectedPlayer;//Todo, change to Character, and merge with selectedNPC
+        private FarmAnimal selectedAnimal;//change to character and merge with selectedNPC
         /// <summary>
         /// If the player has never given the gift, and the feature is enabled then this represents an unknown gift response
         /// </summary>
@@ -183,7 +184,7 @@ namespace M3ales.RelationshipTooltips
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CheckForNPCUnderMouse(object sender, EventArgs e)
+        private void CheckUnderMouse(object sender, EventArgs e)
         {
             if (Game1.gameMode == Game1.playingGameMode && Game1.player != null && Game1.player.currentLocation != null)
             {
@@ -192,6 +193,7 @@ namespace M3ales.RelationshipTooltips
                     selectedNPCGiftOpinion = null;
                     selectedNPC = null;
                     selectedGift = null;
+                    selectedAnimal = null;
                     if (firstHoverTick)
                     {
                         Monitor.Log(String.Format("Player '{0}' under cursor.", selectedPlayer.Name));
@@ -199,6 +201,7 @@ namespace M3ales.RelationshipTooltips
                 }
                 else if (NPCUtils.TryGetNPCUnderCursor(out selectedNPC))
                 {
+                    selectedAnimal = null;
                     selectedPlayer = null;
                     if (selectedNPC.IsMonster)
                     {
@@ -223,7 +226,7 @@ namespace M3ales.RelationshipTooltips
                             else
                             {
                                 selectedNPCGiftOpinion = NPC_GIFT_OPINION_UNKNOWN;
-                            }
+                            }   
                         }
                         else
                         {
@@ -241,12 +244,34 @@ namespace M3ales.RelationshipTooltips
                     }
                     firstHoverTick = false;
                 }
+                else if(CheckForFarmAnimal(out selectedAnimal))
+                {
+                    selectedNPCGiftOpinion = null;
+                    selectedNPC = null;
+                    selectedGift = null;
+                    selectedPlayer = null;
+                    if (firstHoverTick)
+                        Monitor.Log($"FarmAnimal '{selectedAnimal.Name}' under cursor");
+                }
                 else
                 {
                     firstHoverTick = true;
                     selectedGift = null;
                 }
             }
+        }
+        public bool CheckForFarmAnimal(out FarmAnimal animal)
+        {
+            animal = null;
+            foreach(Character c in Game1.player.currentLocation.getCharacters())
+            {
+                if(c.getTileLocation() == Game1.currentCursorTile && c is FarmAnimal)
+                {
+                    animal = c as FarmAnimal;
+                    return true;
+                }
+            }
+            return false;
         }
         /// <summary>
         /// Handles Keyboard Input to Toggle Display of Tooltip, and the gifting of items (hackish solution, but it works)
@@ -425,9 +450,9 @@ namespace M3ales.RelationshipTooltips
                 if (selectedPlayer != null)
                 {
                     npcName = selectedPlayer.Name;
-                    if(selectedPlayer.isMarried())
+                    if (selectedPlayer.isMarried())
                     {
-                        if(Game1.player.spouse == selectedPlayer.Name)
+                        if (Game1.player.spouse == selectedPlayer.Name)
                         {
                             display = config.GetMarriageString(selectedPlayer.IsMale);
                         }
@@ -468,6 +493,21 @@ namespace M3ales.RelationshipTooltips
                     t.header.text = npcName;
                     t.body.text = display;
                     t.Draw(Game1.spriteBatch, null);
+                }
+                else if (selectedAnimal != null)
+                {
+                    if (selectedAnimal.ownerID == Game1.player.UniqueMultiplayerID
+                        || (Game1.IsMultiplayer && Game1.IsClient && selectedAnimal.ownerID == Game1.serverHost.Value.UniqueMultiplayerID))
+                    {
+                        npcName = selectedAnimal.displayName;
+                        display = "Happiness: " + selectedAnimal.happiness;
+                        display += "\n" + config.GetAnimalPetString(selectedAnimal.wasPet);
+                        t.localX = Game1.getMouseX();
+                        t.localY = Game1.getMouseY();
+                        t.header.text = npcName;
+                        t.body.text = display;
+                        t.Draw(Game1.spriteBatch, null);
+                    }
                 }
             }
         }
