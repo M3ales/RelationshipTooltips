@@ -1,4 +1,4 @@
-# Relationship Tooltips [![](http://cf.way2muchnoise.eu/297252.svg)](https://stardewvalley.curseforge.com/projects/298040)
+# Relationship Tooltips [![](http://cf.way2muchnoise.eu/298040.svg)](https://stardewvalley.curseforge.com/projects/298040)
 A tooltip mod which displays NPC friendship/relationship information on mouse hover, as well as gifting information.
 ## Features
 ### Gifting
