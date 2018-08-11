@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace M3ales.RelationshipTooltips
 {
+    /// <summary>
+    /// Data class storing configuration for RelationshipTooltips Mod
+    /// </summary>
     public class ModConfig
     {
+        #region MainConfig
         /// <summary>
         /// The starting value of displayTooltip
         /// </summary>
@@ -24,7 +28,9 @@ namespace M3ales.RelationshipTooltips
         /// <summary>
         /// The key used to toggle the UI display of the Relationship Tooltips tooltip.
         /// </summary>
-        public Microsoft.Xna.Framework.Input.Keys toggleDisplayKey = Microsoft.Xna.Framework.Input.Keys.F8;
+        public StardewModdingAPI.SButton toggleDisplayKey = StardewModdingAPI.SButton.F8;
+        #endregion
+        #region NPCHeartLevel
         public string friendshipAcquaintance = "Acquaintance";
         public string friendshipFriend = "Friend";
         public string friendshipCloseFriend = "Close Friend";
@@ -37,31 +43,60 @@ namespace M3ales.RelationshipTooltips
         public string marriedFemale = "Wife";
         public string divorcedMale = "Ex-Husband";
         public string divorcedFemale = "Ex-Wife";
-        public string gift = "Gift";
-        public string giftLoves = "Loves";
-        public string giftLikes = "Likes";
-        public string giftNeutral = "Neutral";
-        public string giftDislikes = "Dislikes";
-        public string giftHates = "Hates";
-        public string animalPetted = "Is happy to have seen you today.";
-        public string animalNotPetted = "Needs some love.";
-        public string GetAnimalPetString(bool petted)
-        {
-            return petted ? animalPetted : animalNotPetted;
-        }
+        #endregion
+        #region Gift
         /// <summary>
         /// If true, will bypass all checks on if the player knows the gift's response.
         /// </summary>
         public bool playerKnowsAllGifts = false;
         /// <summary>
-        /// Text displayed on the tooltip when the gift response is unknown.
-        /// </summary>
-        public string giftUnknown = "???";
-        /// <summary>
         /// The required level of friendship before a player is granted full knowledge of all gift responses.
         /// </summary>
         public int heartLevelToKnowAllGifts = 7;
-
+        /// <summary>
+        /// Prefix text for gift display.
+        /// </summary>
+        public string gift = "Gift";
+        /// <summary>
+        /// Displayed if NPC Loves this gift.
+        /// </summary>
+        public string giftLoves = "Loves";
+        /// <summary>
+        /// Displayed if NPC Likes this gift.
+        /// </summary>
+        public string giftLikes = "Likes";
+        /// <summary>
+        /// Displayed if NPC is Neutral about the gift.
+        /// </summary>
+        public string giftNeutral = "Neutral";
+        /// <summary>
+        /// Displayed if NPC Dislikes this gift.
+        /// </summary>
+        public string giftDislikes = "Dislikes";
+        /// <summary>
+        /// Displayed if NPC hates this gift.
+        /// </summary>
+        public string giftHates = "Hates";
+        /// <summary>
+        /// Displayed if the gift is a quest item for the NPC.
+        /// </summary>
+        public string giftQuestItem = "Quest Item";
+        /// <summary>
+        /// Text displayed on the tooltip when the gift response is unknown.
+        /// </summary>
+        public string giftUnknown = "???";
+        #endregion
+        #region Animals
+        public string animalPetted = "Is happy to have seen you today.";
+        public string animalNotPetted = "Needs some love.";
+        public string animalHappiness = "Happiness";
+        public string animalFriendship = "Friendship";
+        #endregion
+        #region HelperGets
+        public string GetAnimalPetString(bool petted)
+        {
+            return petted ? animalPetted : animalNotPetted;
+        }
         public string GetEngagedString(int Gender)
         {
             return GetEngagedString(Gender == NPC.male);
@@ -94,5 +129,6 @@ namespace M3ales.RelationshipTooltips
         {
             return isMale ? divorcedMale : divorcedFemale;
         }
+        #endregion
     }
 }

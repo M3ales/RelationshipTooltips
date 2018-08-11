@@ -12,7 +12,7 @@ using StardewValley;
 using StardewValley.Quests;
 using StardewValley.Menus;
 using StardewValley.Characters;
-
+/*
 namespace M3ales.RelationshipTooltips
 {
     public class ModEntry : Mod
@@ -20,11 +20,11 @@ namespace M3ales.RelationshipTooltips
         /// <summary>
         /// Config file instance
         /// </summary>
-        private ModConfig config;
+        internal static ModConfig config;
         /// <summary>
         /// Per Save Gifting Data - what the player has gifted to who in this save
         /// </summary>
-        private GiftSaveInfo giftSaveInfo;
+        internal static GiftSaveInfo giftSaveInfo;
         /// <summary>
         /// Mod Entry point - used by SMAPI to initialize before gamestart
         /// </summary>
@@ -61,6 +61,28 @@ namespace M3ales.RelationshipTooltips
             else
             {
                 Monitor.Log("Session data not saved, recordedGiftInfo: " + config.recordGiftInfo);
+            }
+        }
+        private bool CheckForCharacter(out Character character)
+        {
+            Point mouse = Game1.getMousePosition();
+            Point area = new Point(32, 32);
+            Rectangle mouseBoundingBox = new Rectangle(Game1.viewport.X + mouse.X - area.X / 2, Game1.viewport.Y - area.Y / 2 + mouse.Y, area.X, area.Y);
+            character = null;
+            foreach (Character c in Game1.currentLocation.getCharacters())
+            {
+                if (c.GetBoundingBox().Intersects(mouseBoundingBox))
+                {
+                    character = c;
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void CheckMouseArea()
+        {
+            if (Game1.gameMode == Game1.playingGameMode && Game1.player != null && Game1.player.currentLocation != null)
+            {
             }
         }
         private bool CheckForPlayer(out Farmer player)
@@ -271,7 +293,7 @@ namespace M3ales.RelationshipTooltips
                 foreach (FarmAnimal a in (Game1.player.currentLocation as AnimalHouse).animals.Values)
                 {
                     Rectangle r = a.GetBoundingBox();
-                    Rectangle m = new Rectangle(Game1.getMouseX() + Game1.viewport.X, Game1.getMouseY() + Game1.viewport.Y, 2*Game1.tileSize/3, 2*Game1.tileSize / 3);
+                    Rectangle m = new Rectangle(Game1.getMouseX() + Game1.viewport.X, Game1.getMouseY() + Game1.viewport.Y, 2 * Game1.tileSize / 3, 2 * Game1.tileSize / 3);
                     if (m.Intersects(r))
                     {
                         animal = a;
@@ -305,128 +327,6 @@ namespace M3ales.RelationshipTooltips
                 {
                     displayTooltip = !displayTooltip;
                 }
-            }
-        }
-        /// <summary>
-        /// The flavour text that is displayed below an NPC's name on the Tooltip.
-        /// </summary>
-        /// <param name="level">The current Heart Level of the relationship</param>
-        /// <param name="maxLevel">The max Heart Level of the relationship (default 10, 12 for spouses)</param>
-        /// <param name="amount">The number of friendship 'points'</param>
-        /// <returns>A formatted string containing the relevant Relationship data</returns>
-        private string GetHeartString(int level, int maxLevel, int amount)
-        {
-            string flavourText = "null";
-            if (selectedNPC == null)
-                return "null";
-            if (Game1.player.friendshipData.TryGetValue(selectedNPC.name, out Friendship friendship))
-            {
-                FriendshipStatus status = friendship.Status;
-                switch (status)
-                {
-                    case FriendshipStatus.Dating:
-                        {
-                            flavourText = config.GetDatingString(selectedNPC.Gender) + ": ";
-                            break;
-                        }
-                    case FriendshipStatus.Married:
-                        {
-                            flavourText = config.GetMarriageString(selectedNPC.Gender) + ": ";
-                            break;
-                        }
-                    case FriendshipStatus.Engaged:
-                        {
-                            flavourText = config.GetEngagedString(selectedNPC.Gender) + ": ";
-                            break;
-                        }
-                    case FriendshipStatus.Divorced:
-                        {
-                            flavourText = config.GetDivorcedString(selectedNPC.Gender) + ": ";
-                            break;
-                        }
-                    case FriendshipStatus.Friendly:
-                        {
-                            switch (level)
-                            {
-                                case 0:
-                                case 1:
-                                    {
-                                        flavourText = config.friendshipAcquaintance + ": ";
-                                        break;
-                                    }
-                                case 2:
-                                case 3:
-                                case 4:
-                                    {
-                                        flavourText = config.friendshipFriend + ": ";
-                                        break;
-                                    }
-                                case 5:
-                                case 6:
-                                case 7:
-                                    {
-                                        flavourText = config.friendshipCloseFriend + ": ";
-                                        break;
-                                    }
-                                case 8:
-                                case 9:
-                                case 10:
-                                    {
-                                        flavourText = config.friendshipBestFriend + ": ";
-                                        break;
-                                    }
-                            }
-                            break;
-                        }
-                }
-            }
-            return flavourText + level + "/" + maxLevel + " (" + amount + ")";
-        }
-        /// <summary>
-        /// Appends the gift info to a given string
-        /// </summary>
-        /// <param name="display">The string to append the giftinfo to</param>
-        private void AddGiftString(ref string display)
-        {
-            display += "\n" + config.gift + ": ";
-            switch (selectedNPCGiftOpinion)
-            {
-                case (int)NPCUtils.GiftResponse.Love:
-                    {
-                        display += config.giftLoves;
-                        break;
-                    }
-                case (int)NPCUtils.GiftResponse.Like:
-                case NPC_GIFT_OPINION_QUEST_ITEM:
-                    {
-                        display += config.giftLikes;
-                        break;
-                    }
-                case (int)NPCUtils.GiftResponse.Neutral:
-                    {
-                        display += config.giftNeutral;
-                        break;
-                    }
-                case (int)NPCUtils.GiftResponse.Dislike:
-                    {
-                        display += config.giftDislikes;
-                        break;
-                    }
-                case (int)NPCUtils.GiftResponse.Hate:
-                    {
-                        display += config.giftHates;
-                        break;
-                    }
-                case NPC_GIFT_OPINION_UNKNOWN:
-                    {
-                        display += config.giftUnknown;
-                        break;
-                    }
-                default:
-                    {
-                        display = $"null({selectedNPCGiftOpinion})";
-                        break;
-                    }
             }
         }
         private void DrawTooltip(int x, int y, string text, string header, bool drawAbove = true, bool centered = false)
@@ -473,19 +373,7 @@ namespace M3ales.RelationshipTooltips
                 }
                 else if (selectedNPC != null)
                 {
-                    if (Game1.player.friendshipData.ContainsKey(selectedNPC.name))
-                    {
-                        npcName = selectedNPC.displayName;
-                        int numHearts = 10;//default is 10 for friends
-                        if (selectedNPC == Game1.player.getSpouse())
-                            numHearts = 12;
-                        display += GetHeartString(Game1.player.getFriendshipHeartLevelForNPC(selectedNPC.name), numHearts, Game1.player.getFriendshipLevelForNPC(selectedNPC.name));
-                        if (selectedGift != null)
-                        {
-                            AddGiftString(ref display);
-                        }
-                    }
-                    else if (selectedNPC.Name == Game1.player.getPetName())
+                    if (selectedNPC.Name == Game1.player.getPetName())
                     {
                         // your pet
                         npcName = Game1.player.getPetDisplayName();
@@ -509,7 +397,7 @@ namespace M3ales.RelationshipTooltips
                     {
                         npcName = selectedAnimal.displayName;
                         display = "Happiness: " + selectedAnimal.happiness;
-                        display = "Friendship: " + selectedAnimal.friendshipTowardFarmer/200 + "/5";
+                        display = "Friendship: " + selectedAnimal.friendshipTowardFarmer / 200 + "/5";
                         display += "\n" + config.GetAnimalPetString(selectedAnimal.wasPet);
                         t.localX = Game1.getMouseX();
                         t.localY = Game1.getMouseY();
@@ -521,4 +409,4 @@ namespace M3ales.RelationshipTooltips
             }
         }
     }
-}
+}*/

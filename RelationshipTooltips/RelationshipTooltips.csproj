@@ -7,7 +7,7 @@
     <ProjectGuid>{959DE212-4946-4282-A9DA-252FB040FC80}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RelationshipTooltips</RootNamespace>
+    <RootNamespace>M3ales.RelationshipTooltips</RootNamespace>
     <AssemblyName>RelationshipTooltips</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -65,6 +67,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GiftSaveInfo.cs" />
+    <Compile Include="Relationships\EasterEgg.cs" />
+    <Compile Include="Relationships\FarmAnimalRelationship.cs" />
+    <Compile Include="Relationships\IInputListener.cs" />
+    <Compile Include="Relationships\IPerSaveSerializable.cs" />
+    <Compile Include="Relationships\IRelationship.cs" />
+    <Compile Include="Relationships\IUpdateable.cs" />
+    <Compile Include="Relationships\NPCGiftingRelationship.cs" />
+    <Compile Include="Relationships\NPCRelationship.cs" />
+    <Compile Include="Relationships\PetRelationship.cs" />
+    <Compile Include="Relationships\PlayerRelationship.cs" />
+    <Compile Include="RelationshipTooltipsMod.cs" />
     <Compile Include="UI\Frame.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModEntry.cs" />

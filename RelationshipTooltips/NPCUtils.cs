@@ -51,7 +51,7 @@ namespace M3ales.RelationshipTooltips
         }
         public enum GiftResponse
         {
-            Null = -1, Hate = NPC.gift_taste_hate, Dislike = NPC.gift_taste_dislike,
+            Unknown = -3, QuestItem = -2, Null = -1, Hate = NPC.gift_taste_hate, Dislike = NPC.gift_taste_dislike,
             Neutral = NPC.gift_taste_neutral, Like = NPC.gift_taste_like, Love = NPC.gift_taste_love
         }
     }
