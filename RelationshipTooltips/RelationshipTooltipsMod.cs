@@ -7,30 +7,27 @@ using StardewValley;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using M3ales.RelationshipTooltips.API;
 
 namespace M3ales.RelationshipTooltips
 {
     public class RelationshipTooltipsMod : Mod
     {
+        public RelationshipAPI RelationshipAPI { get; private set; }
         internal ModConfig Config { get; private set; }
-        public List<IRelationship> RelationshipTypes { get; private set; }
+        /// <summary>
+        /// Ordered list of relationships to check against every quater second tick. Higher priorities are first.
+        /// </summary>
+        public List<IRelationship> Relationships { get; private set; }
         public override void Entry(IModHelper helper)
         {
+            RelationshipAPI = new RelationshipAPI();
             Config = helper.ReadConfig<ModConfig>() ?? new ModConfig();
             displayEnabled = Config.displayTooltipByDefault;
             tooltip = new Tooltip(0, 0, Color.White, anchor: FrameAnchor.BottomLeft);
-            RelationshipTypes = new List<IRelationship>()
-            {
-                new PlayerRelationship(),
-                new EasterEgg(),
-                new PetRelationship(),
-                new FarmAnimalRelationship(Config),
-                new NPCGiftingRelationship(Config, Monitor),
-                new NPCRelationship(Config, Monitor)
-            };//LEAST SPECIFIC GOES LAST IN THIS LIST
-            InitRelationshipTypes();
+            Relationships = new List<IRelationship>();//LEAST SPECIFIC GOES LAST IN THIS LIST, IT IS ORDERED BY PRIORITY DESCENDING
+            RelationshipAPI.RegisterRelationships += RelationshipAPI_RegisterRelationships;
+            GameEvents.FirstUpdateTick += (obj, e) => { InitRelationships(); };
             InputEvents.ButtonPressed += (obj, e) => { if (e.Button == Config.toggleDisplayKey) { displayEnabled = !displayEnabled; } };
             GameEvents.QuarterSecondTick += QuaterSecondUpdate;
             GraphicsEvents.OnPostRenderEvent += DrawTooltip;
@@ -38,13 +35,38 @@ namespace M3ales.RelationshipTooltips
             Monitor.Log("Init Complete");
         }
 
+        private void RelationshipAPI_RegisterRelationships(object sender, EventArgsRegisterRelationships e)
+        {
+            e.Relationships.AddRange(new List<IRelationship>()
+            {
+                new PlayerRelationship(),
+                new EasterEgg(),
+                new PetRelationship(),
+                new FarmAnimalRelationship(Config),
+                new NPCGiftingRelationship(Config, Monitor),
+                new NPCRelationship(Config, Monitor)
+            });
+        }
+
+        public override object GetApi()
+        {
+            return RelationshipAPI;
+        }
         /// <summary>
         /// Subscribes the stored Relationships to the relevant events
         /// </summary>
-        private void InitRelationshipTypes()
+        private void InitRelationships()
         {
+            Relationships.AddRange(RelationshipAPI.FireRegistrationEvent());
+            Relationships.Sort((x, y) => y.Priority - x.Priority);
+            string str = "RelationshipTypes:" + Environment.NewLine + Environment.NewLine;
+            foreach (IRelationship r in Relationships)
+            {
+                str += $"\t{r.Priority} :: {r.GetType().ToString()}{Environment.NewLine}";
+            }
+            Monitor.Log(str);
             //subscribe to events
-            foreach(IRelationship r in RelationshipTypes)
+            foreach (IRelationship r in Relationships)
             {
                 if(r is Relationships.IUpdateable)
                 {
@@ -131,7 +153,7 @@ namespace M3ales.RelationshipTooltips
                     }
                     tooltip.header.text = "";
                     tooltip.body.text = "";
-                    foreach(IRelationship relationship in RelationshipTypes)
+                    foreach(IRelationship relationship in Relationships)
                     {
                         if (relationship.ConditionsMet(selectedCharacter, heldItem))
                         {

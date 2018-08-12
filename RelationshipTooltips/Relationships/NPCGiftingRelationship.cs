@@ -10,7 +10,7 @@ using StardewValley.Quests;
 
 namespace M3ales.RelationshipTooltips.Relationships
 {
-    public sealed class NPCGiftingRelationship : NPCRelationship, IInputListener, IPerSaveSerializable
+    public class NPCGiftingRelationship : NPCRelationship, IInputListener, IPerSaveSerializable
     {
         public enum GiftResponse
         {
@@ -18,7 +18,7 @@ namespace M3ales.RelationshipTooltips.Relationships
             Neutral = NPC.gift_taste_neutral, Like = NPC.gift_taste_like, Love = NPC.gift_taste_love
         }
 
-        internal GiftSaveInfo GiftLog { get; private set; }
+        protected GiftSaveInfo GiftLog { get; private set; }
         public bool Display { get; private set; }
         public bool Record { get; private set; }
         public bool KnowsAll { get; private set; }
@@ -30,7 +30,7 @@ namespace M3ales.RelationshipTooltips.Relationships
             Record = config.recordGiftInfo;
             KnowsAll = config.playerKnowsAllGifts;
         }
-
+        public override int Priority => 100;
         public override Func<Character, Item, bool> ConditionsMet => (c, i) => { return Display && i != null && !c.IsMonster && c is NPC && i.canBeGivenAsGift(); };
         #region Input
         Action<Character, Item, EventArgsInput> IInputListener.ButtonPressed => (c, i, args) => { return; };

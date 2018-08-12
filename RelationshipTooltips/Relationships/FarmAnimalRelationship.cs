@@ -17,20 +17,21 @@ namespace M3ales.RelationshipTooltips.Relationships
         {
             Config = config;
         }
-        public Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is FarmAnimal && OwnerIsPlayer((c as FarmAnimal).ownerID.Value); };
+        public virtual int Priority => 50;
+        public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is FarmAnimal && OwnerIsPlayer((c as FarmAnimal).ownerID.Value); };
 
-        private bool OwnerIsPlayer(long ownerID)
+        protected bool OwnerIsPlayer(long ownerID)
         {
             return ownerID == Game1.player.UniqueMultiplayerID || 
                 (Game1.IsMultiplayer && Game1.IsClient && Game1.serverHost.Value.UniqueMultiplayerID == ownerID);
         }
 
-        public string GetHeaderText<T>(T character, Item item = null) where T : Character
+        public virtual string GetHeaderText<T>(T character, Item item = null) where T : Character
         {
             return character.displayName;
         }
 
-        public string GetDisplayText<T>(T character, Item item = null) where T : Character
+        public virtual string GetDisplayText<T>(T character, Item item = null) where T : Character
         {
             FarmAnimal animal = character as FarmAnimal;
             string display = Config.animalHappiness + ": " + animal.happiness;

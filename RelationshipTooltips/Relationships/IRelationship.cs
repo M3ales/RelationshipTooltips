@@ -12,5 +12,6 @@ namespace M3ales.RelationshipTooltips.Relationships
         Func<Character, Item, bool> ConditionsMet { get; }
         string GetHeaderText<T>(T character, Item item = null) where T : Character;
         string GetDisplayText<T>(T character, Item item = null) where T : Character;
+        int Priority { get; }
     }
 }

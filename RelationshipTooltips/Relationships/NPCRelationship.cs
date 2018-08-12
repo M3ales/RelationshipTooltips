@@ -15,6 +15,7 @@ namespace M3ales.RelationshipTooltips.Relationships
     {
         protected IMonitor Monitor { get; set; }
         protected ModConfig Config { get; private set; }
+        public virtual int Priority => 0;
         public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return !c.IsMonster && c is NPC && (i == null || !i.canBeGivenAsGift()); };
         #region Tooltip
         public virtual string GetHeaderText<T>(T character, Item item = null) where T : Character
