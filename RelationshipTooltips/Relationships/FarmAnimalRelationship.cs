@@ -17,7 +17,7 @@ namespace M3ales.RelationshipTooltips.Relationships
         {
             Config = config;
         }
-        public virtual int Priority => 50;
+        public virtual int Priority => 500;
         public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is FarmAnimal && OwnerIsPlayer((c as FarmAnimal).ownerID.Value); };
 
         protected bool OwnerIsPlayer(long ownerID)

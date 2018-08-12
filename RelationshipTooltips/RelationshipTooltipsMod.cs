@@ -26,7 +26,7 @@ namespace M3ales.RelationshipTooltips
             displayEnabled = Config.displayTooltipByDefault;
             tooltip = new Tooltip(0, 0, Color.White, anchor: FrameAnchor.BottomLeft);
             Relationships = new List<IRelationship>();//LEAST SPECIFIC GOES LAST IN THIS LIST, IT IS ORDERED BY PRIORITY DESCENDING
-            RelationshipAPI.RegisterRelationships += RelationshipAPI_RegisterRelationships;
+            RelationshipAPI.RegisterRelationships += RegisterDefaultRelationships;
             GameEvents.FirstUpdateTick += (obj, e) => { InitRelationships(); };
             InputEvents.ButtonPressed += (obj, e) => { if (e.Button == Config.toggleDisplayKey) { displayEnabled = !displayEnabled; } };
             GameEvents.QuarterSecondTick += QuaterSecondUpdate;
@@ -35,7 +35,7 @@ namespace M3ales.RelationshipTooltips
             Monitor.Log("Init Complete");
         }
 
-        private void RelationshipAPI_RegisterRelationships(object sender, EventArgsRegisterRelationships e)
+        private void RegisterDefaultRelationships(object sender, EventArgsRegisterRelationships e)
         {
             e.Relationships.AddRange(new List<IRelationship>()
             {
@@ -57,12 +57,15 @@ namespace M3ales.RelationshipTooltips
         /// </summary>
         private void InitRelationships()
         {
+            //Fire registration event
             Relationships.AddRange(RelationshipAPI.FireRegistrationEvent());
+            //Sort by Priority
             Relationships.Sort((x, y) => y.Priority - x.Priority);
-            string str = "RelationshipTypes:" + Environment.NewLine + Environment.NewLine;
+            //Log
+            string str = "RelationshipTypes:" + Environment.NewLine;
             foreach (IRelationship r in Relationships)
             {
-                str += $"\t{r.Priority} :: {r.GetType().ToString()}{Environment.NewLine}";
+                str += $"{Environment.NewLine}\t{r.Priority} :: {r.GetType().ToString()}";
             }
             Monitor.Log(str);
             //subscribe to events
@@ -96,6 +99,8 @@ namespace M3ales.RelationshipTooltips
         {
             output = null;
             IEnumerable<Character> locationCharacters;
+            if (Game1.currentLocation == null)
+                return false;
             if(Game1.currentLocation is AnimalHouse)
             {
                 locationCharacters = (Game1.currentLocation as AnimalHouse).animals.Values.Select(c => (Character)c)
@@ -108,10 +113,8 @@ namespace M3ales.RelationshipTooltips
             }
             foreach (Character c in locationCharacters)
             {
-                if (c == null)
+                if (c == null || c == Game1.player)
                     continue;
-                if (c == Game1.player)
-                    return false;
                 if (c.getTileLocation() == Game1.currentCursorTile || c.getTileLocation() - Vector2.UnitY == Game1.currentCursorTile)
                 {
                     output = c as T;

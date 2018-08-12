@@ -10,7 +10,7 @@ namespace M3ales.RelationshipTooltips.Relationships
 {
     public class EasterEgg : PetRelationship
     {
-        public override int Priority => 300;
+        public override int Priority => 400;
         public override Func<Character, Item, bool> ConditionsMet => (c, i) => { return base.ConditionsMet(c,i) && c is Cat && c.displayName.Trim() == "drakkensong"; };
 
         public override string GetDisplayText<T>(T character, Item item = null)

@@ -120,7 +120,7 @@ namespace M3ales.RelationshipTooltips.Relationships
                     }
                 }
                 npcRelationship += Environment.NewLine;
-                return GetGiftResponse(npcRelationship, response) + "\n" + (NPC.maxGiftsPerWeek-friendship.GiftsThisWeek) + " gifts left this week.";
+                return GetGiftResponse(npcRelationship, response) + "\n" + (NPC.maxGiftsPerWeek-friendship.GiftsThisWeek) + " gift"+((NPC.maxGiftsPerWeek - friendship.GiftsThisWeek) == 1 ? "" : "s") + " left this week.";
             }
             return npcRelationship;
         }

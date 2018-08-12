@@ -9,15 +9,15 @@ namespace M3ales.RelationshipTooltips.Relationships
 {
     public class PlayerRelationship : IRelationship
     {
-        public int Priority => 400;
-        public Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Farmer; };
+        public virtual int Priority => 200;
+        public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Farmer; };
 
-        public string GetDisplayText<T>(T character, Item item = null) where T : Character
+        public virtual string GetDisplayText<T>(T character, Item item = null) where T : Character
         {
-            return "";
+            return "Another Farmer.";
         }
 
-        public string GetHeaderText<T>(T character, Item item = null) where T : Character
+        public virtual string GetHeaderText<T>(T character, Item item = null) where T : Character
         {
             return character.displayName;
         }
