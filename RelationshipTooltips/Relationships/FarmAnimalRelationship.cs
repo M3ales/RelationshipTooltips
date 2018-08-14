@@ -37,9 +37,14 @@ namespace M3ales.RelationshipTooltips.Relationships
             string display = Config.animalHappiness + ": " + animal.happiness;
             display += Environment.NewLine;
             display += Config.animalFriendship + ": " + animal.friendshipTowardFarmer / FRIENDSHIP_POINTS_PER_LEVEL + "/" + MAX_FRIENDSHIP_LEVEL;
-            display += Environment.NewLine;
-            display += Config.GetAnimalPetString(animal.wasPet);
+            display += PettedResult(animal);
             return display;
+        }
+        private string PettedResult(FarmAnimal f)
+        {
+            if(f.wasPet)
+                return Environment.NewLine + f.getMoodMessage();
+            return Environment.NewLine + Config.animalNotPetted;
         }
 
     }

@@ -85,9 +85,12 @@ namespace M3ales.RelationshipTooltips
         /// Text displayed on the tooltip when the gift response is unknown.
         /// </summary>
         public string giftUnknown = "???";
+        public string givenGiftAlreadyToday = "Already given a gift today.";
+        public string maxGiftsGivenThisWeek = "Given all gifts this week.";
+        public string singleGiftLeftThisWeek = "Last gift this week.";
         #endregion
         #region Animals
-        public string animalPetted = "Is happy to have seen you today.";
+        public string animalPetted = "";
         public string animalNotPetted = "Needs some love.";
         public string animalHappiness = "Happiness";
         public string animalFriendship = "Friendship";

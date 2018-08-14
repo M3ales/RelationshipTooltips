@@ -120,9 +120,21 @@ namespace M3ales.RelationshipTooltips.Relationships
                     }
                 }
                 npcRelationship += Environment.NewLine;
-                return GetGiftResponse(npcRelationship, response) + "\n" + (NPC.maxGiftsPerWeek-friendship.GiftsThisWeek) + " gift"+((NPC.maxGiftsPerWeek - friendship.GiftsThisWeek) == 1 ? "" : "s") + " left this week.";
+                npcRelationship = GetGiftResponse(npcRelationship, response);
+                npcRelationship += AddGiftMiscInfo(friendship);
+                return npcRelationship;
             }
             return npcRelationship;
+        }
+        private string AddGiftMiscInfo(Friendship friendship)
+        {
+            if (friendship.GiftsThisWeek >= NPC.maxGiftsPerWeek)
+                return Environment.NewLine + Config.maxGiftsGivenThisWeek;
+            if (friendship.GiftsToday > 0)
+                return Environment.NewLine + Config.givenGiftAlreadyToday;
+            if (friendship.GiftsThisWeek == 1)
+                return Environment.NewLine + Config.singleGiftLeftThisWeek;
+            return "";
         }
         /// <summary>
         /// Is the gift being given part of an item delivery quest?

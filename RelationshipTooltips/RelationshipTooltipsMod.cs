@@ -160,9 +160,16 @@ namespace M3ales.RelationshipTooltips
                     {
                         if (relationship.ConditionsMet(selectedCharacter, heldItem))
                         {
-                            tooltip.header.text = relationship.GetHeaderText(selectedCharacter, heldItem);
-                            tooltip.body.text = relationship.GetDisplayText(selectedCharacter, heldItem);
-                            break;//Finds the FIRST match, ignores later matches -- may want to change this later
+                            try
+                            {
+                                tooltip.header.text = relationship.GetHeaderText(selectedCharacter, heldItem);
+                                tooltip.body.text = relationship.GetDisplayText(selectedCharacter, heldItem);
+                                break;//Finds the FIRST match, ignores later matches -- may want to change this later
+                            }
+                            catch(ArgumentException e)
+                            {
+                                Monitor.Log(e.Message, LogLevel.Error);
+                            }
                         }
                     }
                 }
