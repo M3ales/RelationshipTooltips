@@ -33,6 +33,8 @@ namespace M3ales.RelationshipTooltips
         /// The key used to toggle the UI display of the Relationship Tooltips tooltip.
         /// </summary>
         public StardewModdingAPI.SButton toggleDisplayKey = StardewModdingAPI.SButton.F8;
+        public bool displayBirthday = true;
+        public string birthdayFormatted = "It's {0} birthday today!";
         #endregion
         #region NPCHeartLevel
         public string friendshipAcquaintance = "Acquaintance";

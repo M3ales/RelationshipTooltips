@@ -57,6 +57,8 @@ namespace M3ales.RelationshipTooltips
                 new NPCRelationship(Config, Monitor),
                 new NonFriendNPCRelationship()
             });
+            if (Config.displayBirthday)
+                e.Relationships.Add(new VillagerBirthdayRelationship());
         }
 
         public override object GetApi()
@@ -82,7 +84,7 @@ namespace M3ales.RelationshipTooltips
             {
                 str += $"{Environment.NewLine}\t{r.Priority} :: {r.GetType().ToString()}";
             }
-            Monitor.Log(str);
+            Monitor.Log(str, LogLevel.Info);
             //subscribe to events
             foreach (IRelationship r in Relationships)
             {
@@ -104,6 +106,25 @@ namespace M3ales.RelationshipTooltips
             }
             Monitor.Log("Relationship Event Subscription Complete.");
         }
+        private IEnumerable<Character> GetLocationCharacters(GameLocation currentLocation, Event currentEvent)
+        {
+            if (Game1.currentLocation is AnimalHouse)
+            {
+                return (currentLocation as AnimalHouse).animals.Values
+                    .Cast<Character>()
+                    .Union(Game1.currentLocation.getCharacters())
+                    .Union(Game1.currentLocation.getFarmers());
+            }
+            if (Game1.CurrentEvent != null && Config.displayTooltipDuringEvent)
+            {
+                return Game1.CurrentEvent.actors
+                    .Cast<Character>()
+                    .Union(Game1.CurrentEvent.farmerActors.Cast<Character>());
+            }
+            return Game1.currentLocation.getCharacters()
+                    .Cast<Character>()
+                    .Union(Game1.currentLocation.getFarmers());
+        }
         /// <summary>
         /// Attempts to get a Character under the mouse, allows for more specific filtering via specification of T other than Character.
         /// </summary>
@@ -113,27 +134,9 @@ namespace M3ales.RelationshipTooltips
         private bool TryGetAtMouse<T>(out T output) where T : Character
         {
             output = null;
-            IEnumerable<Character> locationCharacters;
             if (Game1.currentLocation == null)
                 return false;
-            if(Game1.currentLocation is AnimalHouse)
-            {
-                locationCharacters = (Game1.currentLocation as AnimalHouse).animals.Values.Select(c => (Character)c)
-                    .Union(Game1.currentLocation.getCharacters())
-                    .Union(Game1.currentLocation.getFarmers());
-            }
-            else if(Game1.CurrentEvent != null && Config.displayTooltipDuringEvent)
-            {
-                locationCharacters = Game1.CurrentEvent.actors.Cast<Character>()
-                    .Union(Game1.CurrentEvent.farmerActors.Cast<Character>())
-                    .ToList();
-            }
-            else
-            {
-                locationCharacters = Game1.currentLocation.getCharacters().Select(c => (Character)c)
-                    .Union(Game1.currentLocation.getFarmers());
-            }
-            
+            IEnumerable<Character> locationCharacters = GetLocationCharacters(Game1.currentLocation, Game1.CurrentEvent);
             foreach (Character c in locationCharacters)
             {
                 if (c == null || c == Game1.player)
