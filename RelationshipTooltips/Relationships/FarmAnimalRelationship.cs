@@ -20,6 +20,8 @@ namespace M3ales.RelationshipTooltips.Relationships
         public virtual int Priority => 500;
         public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is FarmAnimal && OwnerIsPlayer((c as FarmAnimal).ownerID.Value); };
 
+        public bool BreakAfter => false;
+
         protected bool OwnerIsPlayer(long ownerID)
         {
             return ownerID == Game1.player.UniqueMultiplayerID || 
@@ -46,6 +48,5 @@ namespace M3ales.RelationshipTooltips.Relationships
                 return Environment.NewLine + f.getMoodMessage();
             return Environment.NewLine + Config.animalNotPetted;
         }
-
     }
 }

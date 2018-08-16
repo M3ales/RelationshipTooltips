@@ -14,15 +14,19 @@ namespace M3ales.RelationshipTooltips
     {
         #region MainConfig
         /// <summary>
-        /// The starting value of displayTooltip
+        /// If tooltips should be displayed during an Event.
+        /// </summary>
+        public bool displayTooltipDuringEvent = true;
+        /// <summary>
+        /// If tooltips are displayed by default on game start.
         /// </summary>
         public bool displayTooltipByDefault = true;
         /// <summary>
-        /// 
+        /// If the gift info should be displayed or not.
         /// </summary>
         public bool displayGiftInfo = true;
         /// <summary>
-        /// Whether to save/listen for gifting events
+        /// Whether to save/listen for gifting events.
         /// </summary>
         public bool recordGiftInfo = true;
         /// <summary>
@@ -90,7 +94,13 @@ namespace M3ales.RelationshipTooltips
         public string singleGiftLeftThisWeek = "Last gift this week.";
         #endregion
         #region Animals
+        /// <summary>
+        /// String displayed if an animal has been petterd [Deprecated]
+        /// </summary>
         public string animalPetted = "";
+        /// <summary>
+        /// String displayed if FarmAnimal has not been petted.
+        /// </summary>
         public string animalNotPetted = "Needs some love.";
         public string animalHappiness = "Happiness";
         public string animalFriendship = "Friendship";

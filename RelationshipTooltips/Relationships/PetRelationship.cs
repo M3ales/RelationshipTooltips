@@ -10,6 +10,7 @@ namespace M3ales.RelationshipTooltips.Relationships
 {
     public class PetRelationship : IRelationship
     {
+        public bool BreakAfter => false;
         public virtual int Priority => 300;
         public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Pet; };
 

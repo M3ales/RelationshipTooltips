@@ -9,6 +9,7 @@ namespace M3ales.RelationshipTooltips.Relationships
 {
     public class PlayerRelationship : IRelationship
     {
+        public bool BreakAfter => false;
         public virtual int Priority => 800;
         public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Farmer && c != Game1.player; };
 

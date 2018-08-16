@@ -15,6 +15,11 @@ namespace M3ales.RelationshipTooltips
         /// Gifts that have been recorded as given
         /// </summary>
         public List<NPCGift> giftsMade;
+        /// <summary>
+        /// Stores the gift giving event described by the NPC receiving and the gift given.
+        /// </summary>
+        /// <param name="npc">The NPC receiving the gift</param>
+        /// <param name="gift">The Gift being given</param>
         public void AddGift(StardewValley.NPC npc, StardewValley.Item gift)
         {
             NPCGift equivalent = new NPCGift(npc.name, gift.Name);
@@ -40,7 +45,13 @@ namespace M3ales.RelationshipTooltips
         /// </summary>
         public class NPCGift
         {
+            /// <summary>
+            /// NPC Name
+            /// </summary>
             public string NPC;
+            /// <summary>
+            /// Gift Item Name
+            /// </summary>
             public string Gift;
 
             public NPCGift(string npc, string gift)

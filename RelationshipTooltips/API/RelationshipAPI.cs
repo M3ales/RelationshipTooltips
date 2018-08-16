@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace M3ales.RelationshipTooltips.API
 {
-    public class RelationshipAPI
+    public class RelationshipAPI : IRelationshipAPI
     {
         public event EventHandler<EventArgsRegisterRelationships> RegisterRelationships;
         internal List<IRelationship> FireRegistrationEvent()

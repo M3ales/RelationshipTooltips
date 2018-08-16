@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\EventArgsRegisterRelationships.cs" />
+    <Compile Include="API\IRelationshipAPI.cs" />
     <Compile Include="GiftSaveInfo.cs" />
     <Compile Include="API\RelationshipAPI.cs" />
     <Compile Include="Relationships\EasterEgg.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Relationships\IPerSaveSerializable.cs" />
     <Compile Include="Relationships\IRelationship.cs" />
     <Compile Include="Relationships\IUpdateable.cs" />
+    <Compile Include="Relationships\NonFriendNPCRelationship.cs" />
     <Compile Include="Relationships\NPCGiftingRelationship.cs" />
     <Compile Include="Relationships\NPCRelationship.cs" />
     <Compile Include="Relationships\PetRelationship.cs" />

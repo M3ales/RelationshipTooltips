@@ -22,17 +22,27 @@ namespace M3ales.RelationshipTooltips
         public override void Entry(IModHelper helper)
         {
             RelationshipAPI = new RelationshipAPI();
+            hasInitRelationships = false;
             Config = helper.ReadConfig<ModConfig>() ?? new ModConfig();
             displayEnabled = Config.displayTooltipByDefault;
             tooltip = new Tooltip(0, 0, Color.White, anchor: FrameAnchor.BottomLeft);
             Relationships = new List<IRelationship>();//LEAST SPECIFIC GOES LAST IN THIS LIST, IT IS ORDERED BY PRIORITY DESCENDING
             RelationshipAPI.RegisterRelationships += RegisterDefaultRelationships;
-            GameEvents.FirstUpdateTick += (obj, e) => { InitRelationships(); };
+            GameEvents.SecondUpdateTick += GameEvents_SecondUpdateTick;
             InputEvents.ButtonPressed += (obj, e) => { if (e.Button == Config.toggleDisplayKey) { displayEnabled = !displayEnabled; } };
             GameEvents.QuarterSecondTick += QuaterSecondUpdate;
             GraphicsEvents.OnPostRenderEvent += DrawTooltip;
             helper.WriteConfig(Config);
             Monitor.Log("Init Complete");
+        }
+
+        private void GameEvents_SecondUpdateTick(object sender, EventArgs e)
+        {
+            if(!hasInitRelationships)
+            {
+                InitRelationships();
+                hasInitRelationships = true;
+            }
         }
 
         private void RegisterDefaultRelationships(object sender, EventArgsRegisterRelationships e)
@@ -44,7 +54,8 @@ namespace M3ales.RelationshipTooltips
                 new PetRelationship(),
                 new FarmAnimalRelationship(Config),
                 new NPCGiftingRelationship(Config, Monitor),
-                new NPCRelationship(Config, Monitor)
+                new NPCRelationship(Config, Monitor),
+                new NonFriendNPCRelationship()
             });
         }
 
@@ -52,6 +63,10 @@ namespace M3ales.RelationshipTooltips
         {
             return RelationshipAPI;
         }
+        /// <summary>
+        /// If the relationship Init step has been called.
+        /// </summary>
+        private bool hasInitRelationships;
         /// <summary>
         /// Subscribes the stored Relationships to the relevant events
         /// </summary>
@@ -106,11 +121,19 @@ namespace M3ales.RelationshipTooltips
                 locationCharacters = (Game1.currentLocation as AnimalHouse).animals.Values.Select(c => (Character)c)
                     .Union(Game1.currentLocation.getCharacters())
                     .Union(Game1.currentLocation.getFarmers());
-            }else
+            }
+            else if(Game1.CurrentEvent != null && Config.displayTooltipDuringEvent)
+            {
+                locationCharacters = Game1.CurrentEvent.actors.Cast<Character>()
+                    .Union(Game1.CurrentEvent.farmerActors.Cast<Character>())
+                    .ToList();
+            }
+            else
             {
                 locationCharacters = Game1.currentLocation.getCharacters().Select(c => (Character)c)
                     .Union(Game1.currentLocation.getFarmers());
             }
+            
             foreach (Character c in locationCharacters)
             {
                 if (c == null || c == Game1.player)
@@ -127,15 +150,31 @@ namespace M3ales.RelationshipTooltips
             return false;
         }
         #region ModLoop
+        /// <summary>
+        /// Whether to display the tooltip or not - togglable.
+        /// </summary>
         private bool displayEnabled;
+        /// <summary>
+        /// The character under the mouse at the last 250ms tick.
+        /// </summary>
         internal Character selectedCharacter;
+        /// <summary>
+        /// The item in the player's hands at the last 250ms tick.
+        /// </summary>
         internal Item heldItem;
+        /// <summary>
+        /// The tooltip used for display
+        /// </summary>
         internal Tooltip tooltip;
         /// <summary>
         /// Used for logging
         /// </summary>
         private bool isFirstTickForMouseHover;
-        
+        /// <summary>
+        /// Mod updates every 250ms for performance.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void QuaterSecondUpdate(object sender, EventArgs e)
         {
             CheckUnderMouse();
@@ -160,15 +199,31 @@ namespace M3ales.RelationshipTooltips
                     {
                         if (relationship.ConditionsMet(selectedCharacter, heldItem))
                         {
-                            try
+                            if (relationship.BreakAfter)
                             {
-                                tooltip.header.text = relationship.GetHeaderText(selectedCharacter, heldItem);
-                                tooltip.body.text = relationship.GetDisplayText(selectedCharacter, heldItem);
-                                break;//Finds the FIRST match, ignores later matches -- may want to change this later
-                            }
-                            catch(ArgumentException e)
+                                try
+                                {
+                                    string header = relationship.GetHeaderText(selectedCharacter, heldItem);
+                                    string body = relationship.GetDisplayText(selectedCharacter, heldItem);
+                                    tooltip.header.text += header;
+                                    if (tooltip.body.text != "")
+                                        tooltip.body.text += "\n";
+                                    tooltip.body.text += body;
+                                    break;//Finds the FIRST match, ignores later matches -- may want to change this later
+                                }
+                                catch (ArgumentException e)
+                                {
+                                    Monitor.Log(e.Message, LogLevel.Error);
+                                }
+                            }else
                             {
-                                Monitor.Log(e.Message, LogLevel.Error);
+                                string header = relationship.GetHeaderText(selectedCharacter, heldItem);
+                                string body = relationship.GetDisplayText(selectedCharacter, heldItem);
+                                tooltip.header.text =  header == "" ? tooltip.header.text : tooltip.header.text + header;
+                                if (tooltip.body.text != "")
+                                    tooltip.body.text = body == "" ? tooltip.body.text : tooltip.body.text + "\n" + body;
+                                else
+                                    tooltip.body.text = body;
                             }
                         }
                     }
