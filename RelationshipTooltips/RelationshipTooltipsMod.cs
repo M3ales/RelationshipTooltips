@@ -28,15 +28,20 @@ namespace RelationshipTooltips
             tooltip = new Tooltip(0, 0, Color.White, anchor: FrameAnchor.BottomLeft);
             Relationships = new List<IRelationship>();//LEAST SPECIFIC GOES LAST IN THIS LIST, IT IS ORDERED BY PRIORITY DESCENDING
             RelationshipAPI.RegisterRelationships += RegisterDefaultRelationships;
-            GameEvents.SecondUpdateTick += GameEvents_SecondUpdateTick;
+            GameEvents.SecondUpdateTick += CheckRelationshipsHaveInit;
             InputEvents.ButtonPressed += (obj, e) => { if (e.Button == Config.toggleDisplayKey) { displayEnabled = !displayEnabled; } };
             GameEvents.QuarterSecondTick += QuaterSecondUpdate;
             GraphicsEvents.OnPostRenderEvent += DrawTooltip;
             helper.WriteConfig(Config);
-            Monitor.Log("Init Complete");
+            Monitor.Log("Entry Complete", LogLevel.Trace);
         }
-
-        private void GameEvents_SecondUpdateTick(object sender, EventArgs e)
+        /// <summary>
+        /// Checks if the init step has been called for relationships, cannot be done in first frame since other mods need to add to API before init.
+        /// Likely to be replaced with Bookcase implementation if/when it's included as a dependancy.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckRelationshipsHaveInit(object sender, EventArgs e)
         {
             if(!hasInitRelationships)
             {
@@ -79,12 +84,14 @@ namespace RelationshipTooltips
             //Sort by Priority
             Relationships.Sort((x, y) => y.Priority - x.Priority);
             //Log
-            string str = "RelationshipTypes:";
+            Monitor.Log($"API found {Relationships.Count()} registered types.", LogLevel.Info);
+            string str = "Types Found:";
+            str += String.Format("{0}\t{1,10} :: {2}", Environment.NewLine, "<Priority>", "<Fully Qualified Type>");
             foreach (IRelationship r in Relationships)
             {
                 str += String.Format("{0}\t{1,10} :: {2}", Environment.NewLine, r.Priority, r.GetType().ToString());
             }
-            Monitor.Log(str, LogLevel.Info);
+            Monitor.Log(str);
             //subscribe to events
             foreach (IRelationship r in Relationships)
             {
@@ -100,8 +107,8 @@ namespace RelationshipTooltips
                 }
                 if(r is IPerSaveSerializable)
                 {
-                    SaveEvents.AfterSave += (obj, args) => { ((IPerSaveSerializable)r).SaveData(Helper); };
-                    SaveEvents.AfterLoad += (obj, args) => { ((IPerSaveSerializable)r).LoadData(Helper); };
+                    SaveEvents.AfterSave += (obj, args) => { ((IPerSaveSerializable)r)?.SaveData(Helper); };
+                    SaveEvents.AfterLoad += (obj, args) => { ((IPerSaveSerializable)r)?.LoadData(Helper); };
                 }
             }
             Monitor.Log("Relationship Event Subscription Complete.");
