@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace M3ales.RelationshipTooltips.UI
+namespace RelationshipTooltips.UI
 {
     public class TooltipContent : Frame, IFrameDrawable
     {

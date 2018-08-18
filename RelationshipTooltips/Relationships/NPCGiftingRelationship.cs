@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Quests;
 
-namespace M3ales.RelationshipTooltips.Relationships
+namespace RelationshipTooltips.Relationships
 {
     public class NPCGiftingRelationship : NPCRelationship, IInputListener, IPerSaveSerializable
     {
@@ -58,7 +59,7 @@ namespace M3ales.RelationshipTooltips.Relationships
         {
             get
             {
-                return $"{Constants.CurrentSavePath}\\{Constants.SaveFolderName}_RelationshipTooltips_GiftInfo.json";
+                return $"{Constants.CurrentSavePath}{Path.PathSeparator}{Constants.SaveFolderName}_RelationshipTooltips_GiftInfo.json";
             }
         }
         Action<IModHelper> IPerSaveSerializable.SaveData => OnSave;

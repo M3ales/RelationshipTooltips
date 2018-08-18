@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace M3ales.RelationshipTooltips.Relationships
+namespace RelationshipTooltips.Relationships
 {
     /// <summary>
     /// Represents the information and functionality needed to express an NPC's relationship with the player.

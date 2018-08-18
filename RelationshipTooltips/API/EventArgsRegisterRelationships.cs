@@ -1,11 +1,11 @@
-﻿using M3ales.RelationshipTooltips.Relationships;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RelationshipTooltips.Relationships;
 
-namespace M3ales.RelationshipTooltips.API
+namespace RelationshipTooltips.API
 {
     public class EventArgsRegisterRelationships : EventArgs
     {

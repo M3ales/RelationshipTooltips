@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace M3ales.RelationshipTooltips.UI
+namespace RelationshipTooltips.UI
 {
     /// <summary>
     /// All drawable elements which are rendered onto a frame

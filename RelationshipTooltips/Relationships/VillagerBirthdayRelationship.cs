@@ -5,14 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using StardewValley;
 
-namespace M3ales.RelationshipTooltips.Relationships
+namespace RelationshipTooltips.Relationships
 {
     public class VillagerBirthdayRelationship : IRelationship
     {
-        public VillagerBirthdayRelationship()
-        {
-
-        }
         public VillagerBirthdayRelationship(ModConfig config)
         {
             Config = config;

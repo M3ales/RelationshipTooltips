@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using StardewModdingAPI.Events;
 using StardewValley;
 
-namespace M3ales.RelationshipTooltips.Relationships
+namespace RelationshipTooltips.Relationships
 {
     public interface IInputListener
     {

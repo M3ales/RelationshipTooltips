@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-namespace M3ales.RelationshipTooltips.Relationships
+namespace RelationshipTooltips.Relationships
 {
     public interface IPerSaveSerializable
     {

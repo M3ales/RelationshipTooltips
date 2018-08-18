@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace M3ales.RelationshipTooltips
+namespace RelationshipTooltips
 {
     /// <summary>
     /// Data class storing configuration for RelationshipTooltips Mod
@@ -34,7 +34,7 @@ namespace M3ales.RelationshipTooltips
         /// </summary>
         public StardewModdingAPI.SButton toggleDisplayKey = StardewModdingAPI.SButton.F8;
         public bool displayBirthday = true;
-        public string birthdayFormatted = "It's {0} birthday today!";
+        public string birthdayFormatted = "It's {0}'s birthday today!";
         #endregion
         #region NPCHeartLevel
         public string friendshipAcquaintance = "Acquaintance";

@@ -8,7 +8,7 @@ using StardewValley.Menus;
 using Microsoft.Xna.Framework;
 using StardewValley;
 
-namespace M3ales.RelationshipTooltips.UI
+namespace RelationshipTooltips.UI
 {
     /// <summary>
     /// Main layout class, provides layout, anchoring, and relative positioning. Can be used to create content aware (resizable) UI elements relatively easily. Limited for the time being.

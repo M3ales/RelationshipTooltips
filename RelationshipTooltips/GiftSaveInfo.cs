@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace M3ales.RelationshipTooltips
+namespace RelationshipTooltips
 {
     /// <summary>
     /// Represents a list of all gifts given, and to which NPC.

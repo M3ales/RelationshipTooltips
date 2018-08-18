@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 
-namespace M3ales.RelationshipTooltips.UI
+namespace RelationshipTooltips.UI
 {
     /// <summary>
     /// Text with a dropshadow

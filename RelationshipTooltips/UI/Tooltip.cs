@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using StardewValley;
 
-namespace M3ales.RelationshipTooltips.UI
+namespace RelationshipTooltips.UI
 {
     /// <summary>
     /// A wrapper using Frame's positioning and anchoring logic to draw a tooltip

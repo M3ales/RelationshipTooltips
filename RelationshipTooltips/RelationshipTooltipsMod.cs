@@ -1,5 +1,5 @@
-﻿using M3ales.RelationshipTooltips.Relationships;
-using M3ales.RelationshipTooltips.UI;
+﻿using RelationshipTooltips.Relationships;
+using RelationshipTooltips.UI;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -7,9 +7,9 @@ using StardewValley;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using M3ales.RelationshipTooltips.API;
+using RelationshipTooltips.API;
 
-namespace M3ales.RelationshipTooltips
+namespace RelationshipTooltips
 {
     public class RelationshipTooltipsMod : Mod
     {
@@ -58,7 +58,7 @@ namespace M3ales.RelationshipTooltips
                 new NonFriendNPCRelationship()
             });
             if (Config.displayBirthday)
-                e.Relationships.Add(new VillagerBirthdayRelationship());
+                e.Relationships.Add(new VillagerBirthdayRelationship(Config));
         }
 
         public override object GetApi()
@@ -79,10 +79,10 @@ namespace M3ales.RelationshipTooltips
             //Sort by Priority
             Relationships.Sort((x, y) => y.Priority - x.Priority);
             //Log
-            string str = "RelationshipTypes:" + Environment.NewLine;
+            string str = "RelationshipTypes:";
             foreach (IRelationship r in Relationships)
             {
-                str += $"{Environment.NewLine}\t{r.Priority} :: {r.GetType().ToString()}";
+                str += String.Format("{0}\t{1,10} :: {2}", Environment.NewLine, r.Priority, r.GetType().ToString());
             }
             Monitor.Log(str, LogLevel.Info);
             //subscribe to events
@@ -106,24 +106,24 @@ namespace M3ales.RelationshipTooltips
             }
             Monitor.Log("Relationship Event Subscription Complete.");
         }
-        private IEnumerable<Character> GetLocationCharacters(GameLocation currentLocation, Event currentEvent)
+        private IEnumerable<Character> GetLocationCharacters(GameLocation location, Event currentEvent = null)
         {
-            if (Game1.currentLocation is AnimalHouse)
+            if (location is AnimalHouse)
             {
-                return (currentLocation as AnimalHouse).animals.Values
+                return (location as AnimalHouse).animals.Values
                     .Cast<Character>()
-                    .Union(Game1.currentLocation.getCharacters())
-                    .Union(Game1.currentLocation.getFarmers());
+                    .Union(location.getCharacters())
+                    .Union(location.getFarmers());
             }
-            if (Game1.CurrentEvent != null && Config.displayTooltipDuringEvent)
+            if (currentEvent != null && Config.displayTooltipDuringEvent)
             {
-                return Game1.CurrentEvent.actors
+                return currentEvent.actors
                     .Cast<Character>()
-                    .Union(Game1.CurrentEvent.farmerActors.Cast<Character>());
+                    .Union(currentEvent.farmerActors.Cast<Character>());
             }
-            return Game1.currentLocation.getCharacters()
+            return location.getCharacters()
                     .Cast<Character>()
-                    .Union(Game1.currentLocation.getFarmers());
+                    .Union(location.getFarmers());
         }
         /// <summary>
         /// Attempts to get a Character under the mouse, allows for more specific filtering via specification of T other than Character.

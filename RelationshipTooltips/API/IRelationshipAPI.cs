@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using M3ales.RelationshipTooltips.Relationships;
+using RelationshipTooltips.Relationships;
 
-namespace M3ales.RelationshipTooltips.API
+namespace RelationshipTooltips.API
 {
     public interface IRelationshipAPI
     {

@@ -7,7 +7,7 @@
     <ProjectGuid>{959DE212-4946-4282-A9DA-252FB040FC80}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>M3ales.RelationshipTooltips</RootNamespace>
+    <RootNamespace>RelationshipTooltips</RootNamespace>
     <AssemblyName>RelationshipTooltips</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -81,6 +81,7 @@
     <Compile Include="Relationships\NPCRelationship.cs" />
     <Compile Include="Relationships\PetRelationship.cs" />
     <Compile Include="Relationships\PlayerRelationship.cs" />
+    <Compile Include="Relationships\VillagerBirthdayRelationship.cs" />
     <Compile Include="RelationshipTooltipsMod.cs" />
     <Compile Include="UI\Frame.cs" />
     <Compile Include="ModConfig.cs" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using StardewValley;
 using StardewValley.Characters;
 
-namespace M3ales.RelationshipTooltips.Relationships
+namespace RelationshipTooltips.Relationships
 {
     public class EasterEgg : PetRelationship
     {
