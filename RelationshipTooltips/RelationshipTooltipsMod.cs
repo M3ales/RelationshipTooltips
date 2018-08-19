@@ -24,7 +24,6 @@ namespace RelationshipTooltips
         public override void Entry(IModHelper helper)
         {
             RelationshipAPI = new RelationshipAPI();
-            hasInitRelationships = false;
             Config = helper.ReadConfig<ModConfig>() ?? new ModConfig();
             displayEnabled = Config.displayTooltipByDefault;
             tooltip = new Tooltip(0, 0, Color.White, anchor: FrameAnchor.BottomLeft);
