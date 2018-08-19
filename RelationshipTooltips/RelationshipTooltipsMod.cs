@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RelationshipTooltips.API;
+using Bookcase.Events;
+using Event = StardewValley.Event;
 
 namespace RelationshipTooltips
 {
@@ -28,26 +30,12 @@ namespace RelationshipTooltips
             tooltip = new Tooltip(0, 0, Color.White, anchor: FrameAnchor.BottomLeft);
             Relationships = new List<IRelationship>();//LEAST SPECIFIC GOES LAST IN THIS LIST, IT IS ORDERED BY PRIORITY DESCENDING
             RelationshipAPI.RegisterRelationships += RegisterDefaultRelationships;
-            GameEvents.SecondUpdateTick += CheckRelationshipsHaveInit;
+            BookcaseEvents.FirstGameTick.Add((e) => InitRelationships(), Priority.Lowest);
+            BookcaseEvents.GameQuaterSecondTick.Add(QuaterSecondUpdate);
             InputEvents.ButtonPressed += (obj, e) => { if (e.Button == Config.toggleDisplayKey) { displayEnabled = !displayEnabled; } };
-            GameEvents.QuarterSecondTick += QuaterSecondUpdate;
             GraphicsEvents.OnPostRenderEvent += DrawTooltip;
             helper.WriteConfig(Config);
             Monitor.Log("Entry Complete", LogLevel.Trace);
-        }
-        /// <summary>
-        /// Checks if the init step has been called for relationships, cannot be done in first frame since other mods need to add to API before init.
-        /// Likely to be replaced with Bookcase implementation if/when it's included as a dependancy.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckRelationshipsHaveInit(object sender, EventArgs e)
-        {
-            if(!hasInitRelationships)
-            {
-                InitRelationships();
-                hasInitRelationships = true;
-            }
         }
 
         private void RegisterDefaultRelationships(object sender, EventArgsRegisterRelationships e)
@@ -71,10 +59,6 @@ namespace RelationshipTooltips
             return RelationshipAPI;
         }
         /// <summary>
-        /// If the relationship Init step has been called.
-        /// </summary>
-        private bool hasInitRelationships;
-        /// <summary>
         /// Subscribes the stored Relationships to the relevant events
         /// </summary>
         private void InitRelationships()
@@ -86,10 +70,10 @@ namespace RelationshipTooltips
             //Log
             Monitor.Log($"API found {Relationships.Count()} registered types.", LogLevel.Info);
             string str = "Types Found:";
-            str += String.Format("{0}\t{1,10} :: {2}", Environment.NewLine, "<Priority>", "<Fully Qualified Type>");
+            str += String.Format("{0}{1,10} :: {2}", Environment.NewLine, "<Priority>", "<Fully Qualified Type>");
             foreach (IRelationship r in Relationships)
             {
-                str += String.Format("{0}\t{1,10} :: {2}", Environment.NewLine, r.Priority, r.GetType().ToString());
+                str += String.Format("{0}{1,10} :: {2}", Environment.NewLine, r.Priority, r.GetType().ToString());
             }
             Monitor.Log(str);
             //subscribe to events
@@ -183,9 +167,8 @@ namespace RelationshipTooltips
         /// <summary>
         /// Mod updates every 250ms for performance.
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void QuaterSecondUpdate(object sender, EventArgs e)
+        private void QuaterSecondUpdate(Bookcase.Events.Event e)
         {
             CheckUnderMouse();
         }

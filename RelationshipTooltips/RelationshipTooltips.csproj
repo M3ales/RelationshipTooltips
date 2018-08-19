@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RelationshipTooltips</RootNamespace>
     <AssemblyName>RelationshipTooltips</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,6 +53,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bookcase">
+      <HintPath>G:\SteamLibrary\steamapps\common\Stardew Valley\Mods\Bookcase\Bookcase.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>G:\SteamLibrary\steamapps\common\Stardew Valley\Newtonsoft.Json.dll</HintPath>
@@ -72,6 +77,7 @@
     <Compile Include="API\RelationshipAPI.cs" />
     <Compile Include="Relationships\EasterEgg.cs" />
     <Compile Include="Relationships\FarmAnimalRelationship.cs" />
+    <Compile Include="Relationships\HorseRelationship.cs" />
     <Compile Include="Relationships\IInputListener.cs" />
     <Compile Include="Relationships\IPerSaveSerializable.cs" />
     <Compile Include="Relationships\IRelationship.cs" />
