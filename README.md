@@ -16,7 +16,7 @@ Pets display a simple nametag on hover, because we already know your pet loves y
 * Built on [SMAPI 2.6](https://github.com/Pathoschild/SMAPI).
 
 ## API
-As of RT 2.0.0-beta.1 you can now add your own text to the relationship tooltips mod. It currently will search for *anything* inheriting from `StardewValley.Character` and allow you to provide conditions for different text displays. It's currently limited to text, but hopefully in future this will expand to Images.
+As of RT 2.0.0-beta.2 you can now add your own text to the relationship tooltips mod. It currently will search for *anything* inheriting from `StardewValley.Character` and allow you to provide conditions for different text displays. It's currently limited to text, but hopefully in future this will expand to Images.
 ### Installation
 #### Requirements
 * SMAPI 2.6 or later (Preferably later, but it should still work in installs down to SMAPI 2.0)
@@ -131,7 +131,7 @@ You'll want to add a Dependency snippet to the end of your `manifest.json`.
   "Dependencies": [
     {
       "UniqueID": "M3ales.RelationshipTooltips",
-      "MinimumVersion": "2.0.0-beta.1"
+      "MinimumVersion": "2.0.0-beta.2"
     }
 ```
 
@@ -149,7 +149,7 @@ The full `manifest.json` should look something like this.
   "Dependencies": [
     {
       "UniqueID": "M3ales.RelationshipTooltips",
-      "MinimumVersion": "2.0.0-beta.1"
+      "MinimumVersion": "2.0.0-beta.2"
     }
   ]
 }
