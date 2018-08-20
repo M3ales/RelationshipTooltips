@@ -20,7 +20,7 @@ namespace RelationshipTooltips.Relationships
             &&
             NonGiftableNPCs.Contains(c.Name);
 
-        public int Priority => 200;
+        public int Priority => 20000;
 
         public bool BreakAfter => true;
         public string[] NonGiftableNPCs = new string[]

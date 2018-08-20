@@ -14,8 +14,8 @@ namespace RelationshipTooltips.API
         internal List<IRelationship> FireRegistrationEvent()
         {
             EventArgsRegisterRelationships toRegister = new EventArgsRegisterRelationships();
-            RegisterRelationships(null, toRegister);
-            OnRegisterRelationshipsComplete(null, toRegister);
+            RegisterRelationships?.Invoke(null, toRegister);
+            OnRegisterRelationshipsComplete?.Invoke(null, toRegister);
             return toRegister.Relationships;
         }
     }

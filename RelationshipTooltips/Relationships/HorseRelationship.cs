@@ -13,7 +13,7 @@ namespace RelationshipTooltips.Relationships
     {
         public Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Horse; };
 
-        public int Priority => -1000;
+        public int Priority => -30000;
 
         public bool BreakAfter => false;
 

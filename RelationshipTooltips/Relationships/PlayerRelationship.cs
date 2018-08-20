@@ -10,7 +10,7 @@ namespace RelationshipTooltips.Relationships
     public class PlayerRelationship : IRelationship
     {
         public bool BreakAfter => false;
-        public virtual int Priority => 800;
+        public virtual int Priority => 60000;
         public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Farmer && c != Game1.player; };
 
         public virtual string GetDisplayText<T>(T character, Item item = null) where T : Character

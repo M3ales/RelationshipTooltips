@@ -31,7 +31,7 @@ namespace RelationshipTooltips.Relationships
             Record = config.recordGiftInfo;
             KnowsAll = config.playerKnowsAllGifts;
         }
-        public override int Priority => -100;
+        public override int Priority => -10000;
         public override Func<Character, Item, bool> ConditionsMet => (c, i) => { return Display && i != null && !c.IsMonster && c is NPC && ((NPC)c).isVillager() && i.canBeGivenAsGift(); };
         #region Input
         Action<Character, Item, EventArgsInput> IInputListener.ButtonPressed => (c, i, args) => { return; };

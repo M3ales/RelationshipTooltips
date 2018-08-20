@@ -11,7 +11,7 @@ namespace RelationshipTooltips.Relationships
     public class PetRelationship : IRelationship
     {
         public bool BreakAfter => false;
-        public virtual int Priority => 300;
+        public virtual int Priority => 30000;
         public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Pet; };
 
         public virtual string GetDisplayText<T>(T character, Item item = null) where T : Character

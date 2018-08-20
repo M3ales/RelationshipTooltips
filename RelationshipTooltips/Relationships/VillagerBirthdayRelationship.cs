@@ -21,7 +21,7 @@ namespace RelationshipTooltips.Relationships
             return c != null && npc.isVillager() && Game1.player.friendshipData.ContainsKey(c.Name) && npc.isBirthday(Game1.currentSeason, Game1.dayOfMonth);
 
         }
-        public virtual int Priority => -200;
+        public virtual int Priority => -20000;
 
         public virtual bool BreakAfter => false;
 

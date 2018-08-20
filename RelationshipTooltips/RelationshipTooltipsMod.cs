@@ -47,7 +47,8 @@ namespace RelationshipTooltips
                 new FarmAnimalRelationship(Config),
                 new NPCGiftingRelationship(Config, Monitor),
                 new NPCRelationship(Config, Monitor),
-                new NonFriendNPCRelationship()
+                new NonFriendNPCRelationship(),
+                new HorseRelationship()
             });
             if (Config.displayBirthday)
                 e.Relationships.Add(new VillagerBirthdayRelationship(Config));
