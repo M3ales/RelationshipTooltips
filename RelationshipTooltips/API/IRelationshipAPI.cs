@@ -10,5 +10,6 @@ namespace RelationshipTooltips.API
     public interface IRelationshipAPI
     {
         event EventHandler<EventArgsRegisterRelationships> RegisterRelationships;
+        event EventHandler<EventArgsRegisterRelationships> OnRegisterRelationshipsComplete;
     }
 }

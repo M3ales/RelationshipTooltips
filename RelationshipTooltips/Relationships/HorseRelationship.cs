@@ -11,11 +11,11 @@ namespace RelationshipTooltips.Relationships
 {
     public class HorseRelationship : IRelationship
     {
-        public Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Monster; };
+        public Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Horse; };
 
-        public int Priority => throw new NotImplementedException();
+        public int Priority => -1000;
 
-        public bool BreakAfter => throw new NotImplementedException();
+        public bool BreakAfter => false;
 
         public string GetDisplayText<T>(T character, Item item = null) where T : Character
         {
