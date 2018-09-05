@@ -188,7 +188,7 @@ namespace RelationshipTooltips.UI
         /// </summary>
         /// <param name="f">The FrameAnchor to reflect</param>
         /// <returns>The Reflection about the Y axis.</returns>
-        public FrameAnchor Flip(FrameAnchor f)
+        public virtual FrameAnchor Flip(FrameAnchor f)
         {
             switch(f)
             {

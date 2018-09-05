@@ -26,6 +26,11 @@ namespace RelationshipTooltips.UI
             this.Draw(b, null);
         }
 
+        public override FrameAnchor Flip(FrameAnchor f)
+        {
+            return f;
+        }
+
         int IFrameDrawable.SizeX => this.Width + (xPadding * 2);
 
         int IFrameDrawable.SizeY => this.Height + (yPadding * 2);
