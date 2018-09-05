@@ -52,14 +52,18 @@ namespace RelationshipTooltips
                 new FarmAnimalRelationship(Config),
                 new NPCGiftingRelationship(Config, Monitor),
                 new NPCRelationship(Config, Monitor),
-                new NonFriendNPCRelationship(),
-                new HorseRelationship()
+                new HorseRelationship(),
+                new NonFriendNPCRelationship()
             });
             if (Config.displayBirthday)
                 e.RelationshipsOnHover.Add(new VillagerBirthdayRelationship(Config));
             #endregion
             #region OnScreen
-            e.RelationshipsOnScreen.Add(new MonsterHealthRelationship());
+            e.RelationshipsOnScreen.AddRange(new List<IRelationship>()
+            {
+                new MonsterHealthRelationship(),
+                new VillagerNameScreenRelationship()
+            });
             #endregion
         }
 
