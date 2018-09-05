@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Characters;
 
 namespace RelationshipTooltips.Relationships
 {
@@ -17,19 +18,19 @@ namespace RelationshipTooltips.Relationships
         protected ModConfig Config { get; private set; }
         public virtual int Priority => 0;
 
-        public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return !c.IsMonster && c is NPC && (i == null || !i.canBeGivenAsGift()); };
+        public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return !c.IsMonster && (c.GetType() == typeof(NPC)) && (i == null || !i.canBeGivenAsGift()); };
 
         public bool BreakAfter => false;
         
         #region Tooltip
-        public virtual string GetHeaderText<T>(T character, Item item = null) where T : Character
+        public virtual string GetHeaderText<T>(string currentHeader, T character, Item item = null) where T : Character
         {
-            if (!Game1.player.friendshipData.ContainsKey(character.Name))
+            if (!Game1.player.friendshipData.ContainsKey(character.Name) && character.GetType() == typeof(NPC) && currentHeader == "")
                 return "???";
             return character.displayName;
         }
 
-        public virtual string GetDisplayText<T>(T character, Item item = null) where T : Character
+        public virtual string GetDisplayText<T>(string currentDisplay, T character, Item item = null) where T : Character
         {
             NPC selectedNPC = character as NPC ?? throw new ArgumentNullException("character", "Cannot create display text for null Character.");
             if (Game1.player.friendshipData.TryGetValue(selectedNPC.Name, out Friendship friendship))

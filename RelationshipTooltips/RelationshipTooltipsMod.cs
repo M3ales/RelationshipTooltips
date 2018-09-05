@@ -1,4 +1,4 @@
-﻿using RelationshipTooltips.Relationships;
+using RelationshipTooltips.Relationships;
 using RelationshipTooltips.UI;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -226,8 +226,8 @@ namespace RelationshipTooltips
                     {
                         try
                         {
-                            string header = relationship.GetHeaderText(selectedCharacter, heldItem);
-                            string body = relationship.GetDisplayText(selectedCharacter, heldItem);
+                            string header = relationship.GetHeaderText(tooltip.header.text, selectedCharacter, heldItem);
+                            string body = relationship.GetDisplayText(tooltip.body.text, selectedCharacter, heldItem);
                             tooltip.header.text += header;
                             if (tooltip.body.text != "")
                                 tooltip.body.text += "\n";
@@ -241,8 +241,8 @@ namespace RelationshipTooltips
                     }
                     else
                     {
-                        string header = relationship.GetHeaderText(selectedCharacter, heldItem);
-                        string body = relationship.GetDisplayText(selectedCharacter, heldItem);
+                        string header = relationship.GetHeaderText(tooltip.header.text, selectedCharacter, heldItem);
+                        string body = relationship.GetDisplayText(tooltip.body.text, selectedCharacter, heldItem);
                         tooltip.header.text = header == "" ? tooltip.header.text : tooltip.header.text + header;
                         if (tooltip.body.text != "")
                             tooltip.body.text = body == "" ? tooltip.body.text : tooltip.body.text + "\n" + body;

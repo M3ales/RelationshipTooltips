@@ -28,12 +28,12 @@ namespace RelationshipTooltips.Relationships
                 (Game1.IsMultiplayer && Game1.IsClient && Game1.serverHost.Value.UniqueMultiplayerID == ownerID);
         }
 
-        public virtual string GetHeaderText<T>(T character, Item item = null) where T : Character
+        public virtual string GetHeaderText<T>(string currentHeader, T character, Item item = null) where T : Character
         {
             return character.displayName;
         }
 
-        public virtual string GetDisplayText<T>(T character, Item item = null) where T : Character
+        public virtual string GetDisplayText<T>(string currentDisplay, T character, Item item = null) where T : Character
         {
             FarmAnimal animal = character as FarmAnimal;
             string display = Config.animalHappiness + ": " + animal.happiness;

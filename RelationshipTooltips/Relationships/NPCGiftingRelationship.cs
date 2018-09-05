@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -88,14 +88,14 @@ namespace RelationshipTooltips.Relationships
         }
         #endregion
         #region Tooltip
-        public override string GetHeaderText<T>(T character, Item item = null)
+        public override string GetHeaderText<T>(string currentHeader, T character, Item item = null)
         {
-            return base.GetHeaderText(character, item);
+            return base.GetHeaderText(currentHeader, character, item);
         }
-        public override string GetDisplayText<T>(T character, Item item = null)
+        public override string GetDisplayText<T>(string currentDisplay, T character, Item item = null)
         {
             NPC selectedNPC = character as NPC ?? throw new ArgumentNullException("character", "Cannot display information about gifts for null Character");
-            string npcRelationship = base.GetDisplayText(character, item);
+            string npcRelationship = base.GetDisplayText(currentDisplay, character, item);
             GiftResponse response = (GiftResponse)selectedNPC.getGiftTasteForThisItem(item);
             if (Game1.player.friendshipData.TryGetValue(selectedNPC.Name, out Friendship friendship))
             {

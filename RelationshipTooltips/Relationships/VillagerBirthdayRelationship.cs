@@ -25,12 +25,12 @@ namespace RelationshipTooltips.Relationships
 
         public virtual bool BreakAfter => false;
 
-        public virtual string GetDisplayText<T>(T character, Item item = null) where T : Character
+        public virtual string GetDisplayText<T>(string currentDisplay, T character, Item item = null) where T : Character
         {
             return String.Format(Config.birthdayFormatted, character.displayName);
         }
 
-        public virtual string GetHeaderText<T>(T character, Item item = null) where T : Character
+        public virtual string GetHeaderText<T>(string currentHeader, T character, Item item = null) where T : Character
         {
             return "";
         }

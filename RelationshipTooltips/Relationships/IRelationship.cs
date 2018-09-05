@@ -20,7 +20,7 @@ namespace RelationshipTooltips.Relationships
         /// <param name="character">The character to generate the header from.</param>
         /// <param name="item">The item assumed to be held by the player.</param>
         /// <returns>The header text based on the Relationship implementation.</returns>
-        string GetHeaderText<T>(T character, Item item = null) where T : Character;
+        string GetHeaderText<T>(string currentHeader, T character, Item item = null) where T : Character;
         /// <summary>
         /// The body text to display on the tooltip. Blank results are ignored.
         /// </summary>
@@ -28,7 +28,7 @@ namespace RelationshipTooltips.Relationships
         /// <param name="character">The character for which the body is being requested.</param>
         /// <param name="item">The item assumed to be held by the player.</param>
         /// <returns>The body text based on the Relationship implementation.</returns>
-        string GetDisplayText<T>(T character, Item item = null) where T : Character;
+        string GetDisplayText<T>(string currentDisplay, T character, Item item = null) where T : Character;
         /// <summary>
         /// The priority to which this Relationship will be sorted - higher is first. Please don't use unreasonably large numbers. Identical values will be at the mercy of List.sort for ordering.
         /// </summary>

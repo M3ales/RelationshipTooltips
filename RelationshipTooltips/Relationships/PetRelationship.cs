@@ -14,12 +14,12 @@ namespace RelationshipTooltips.Relationships
         public virtual int Priority => 30000;
         public virtual Func<Character, Item, bool> ConditionsMet => (c, i) => { return c is Pet; };
 
-        public virtual string GetDisplayText<T>(T character, Item item = null) where T : Character
+        public virtual string GetDisplayText<T>(string currentDisplay, T character, Item item = null) where T : Character
         {
             return "";
         }
 
-        public virtual string GetHeaderText<T>(T character, Item item = null) where T : Character
+        public virtual string GetHeaderText<T>(string currentHeader, T character, Item item = null) where T : Character
         {
             return (character as Pet).displayName;
         }
