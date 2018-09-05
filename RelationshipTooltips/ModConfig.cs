@@ -33,7 +33,7 @@ namespace RelationshipTooltips
         /// <summary>
         /// The key used to toggle the UI display of the Relationship Tooltips tooltip.
         /// </summary>
-        public StardewModdingAPI.SButton toggleDisplayKey = StardewModdingAPI.SButton.F8;
+        public SButton toggleDisplayKey = SButton.F8;
         public bool displayBirthday = true;
         public string birthdayFormatted = "It's {0}'s birthday today!";
         #endregion
