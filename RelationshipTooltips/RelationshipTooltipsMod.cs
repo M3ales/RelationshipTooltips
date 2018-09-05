@@ -105,18 +105,27 @@ namespace RelationshipTooltips
             {
                 if(r is Relationships.IUpdateable)
                 {
-                    GameEvents.UpdateTick += (obj, args) => { ((Relationships.IUpdateable)r)?.OnTick(selectedCharacter, heldItem); };
-                    GameEvents.QuarterSecondTick += (obj, args) => { ((Relationships.IUpdateable)r)?.OnQuaterSecondTick(selectedCharacter, heldItem); };
+                    var o = r as Relationships.IUpdateable;
+                    if(o.OnTick != null)
+                        GameEvents.UpdateTick += (obj, args) => { o.OnTick(selectedCharacter, heldItem); };
+                    if (o.OnQuaterSecondTick != null)
+                        GameEvents.QuarterSecondTick += (obj, args) => { o.OnQuaterSecondTick(selectedCharacter, heldItem); };
                 }
                 if(r is IInputListener)
                 {
-                    InputEvents.ButtonPressed += (obj, args) => { ((IInputListener)r)?.ButtonPressed(selectedCharacter, heldItem, args); };
-                    InputEvents.ButtonReleased += (obj, args) => { ((IInputListener)r)?.ButtonReleased(selectedCharacter, heldItem, args); };
+                    var o = r as IInputListener;
+                    if(o.ButtonPressed != null)
+                        InputEvents.ButtonPressed += (obj, args) => { o.ButtonPressed.Invoke(selectedCharacter, heldItem, args); };
+                    if(o.ButtonReleased != null)
+                        InputEvents.ButtonReleased += (obj, args) => { o.ButtonReleased(selectedCharacter, heldItem, args); };
                 }
                 if(r is IPerSaveSerializable)
                 {
-                    SaveEvents.AfterSave += (obj, args) => { ((IPerSaveSerializable)r)?.SaveData(Helper); };
-                    SaveEvents.AfterLoad += (obj, args) => { ((IPerSaveSerializable)r)?.LoadData(Helper); };
+                    var o = r as IPerSaveSerializable;
+                    if(o.SaveData != null)
+                        SaveEvents.AfterSave += (obj, args) => { o.SaveData(Helper); };
+                    if(o.LoadData != null)
+                        SaveEvents.AfterLoad += (obj, args) => { o.LoadData(Helper); };
                 }
             }
             Monitor.Log("Relationship Event Subscription Complete.");
