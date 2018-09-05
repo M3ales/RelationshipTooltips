@@ -301,24 +301,27 @@ namespace RelationshipTooltips
         {
             if (displayEnabled)
             {
-                if (selectedCharacter != null && tooltip.header.text != "")
-                {
-                    tooltip.localX = Game1.getMouseX();
-                    tooltip.localY = Game1.getMouseY();
-                    tooltip.Draw(Game1.spriteBatch, null);
-                }
                 if(screenCharacters.Count > 0 && Game1.activeClickableMenu == null)
                 {
-                    foreach(Character c in screenCharacters)
+                    foreach(Character c in screenCharacters.OrderBy(x=>x.Position.Y))
                     {
-                        if (c == null || c == Game1.player)
+                        if (c == null || c == Game1.player || c == selectedCharacter)
                             continue;
                         Tooltip t = screenTooltipCache[c];
+                        if (t.header.text == "" && t.body.text == "")
+                            continue;
                         const int offset = -64;
                         t.localX = c.GetBoundingBox().Center.X - Game1.viewport.X;
                         t.localY = c.GetBoundingBox().Center.Y - Game1.viewport.Y + offset;
                         t.Draw(Game1.spriteBatch, null);
                     }
+                }
+                
+                if (selectedCharacter != null && (tooltip.header.text != "" || tooltip.body.text != ""))
+                {
+                    tooltip.localX = Game1.getMouseX();
+                    tooltip.localY = Game1.getMouseY();
+                    tooltip.Draw(Game1.spriteBatch, null);
                 }
             }
         }
