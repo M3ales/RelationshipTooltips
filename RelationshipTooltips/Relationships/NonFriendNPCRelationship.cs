@@ -23,7 +23,7 @@ namespace RelationshipTooltips.Relationships
         public int Priority => 20000;
 
         public bool BreakAfter => true;
-        public string[] NonGiftableNPCs = new string[]
+        public static string[] NonGiftableNPCs = new string[]
         {
             "Bouncer",
             "Gil",
@@ -35,12 +35,12 @@ namespace RelationshipTooltips.Relationships
             "Morris",
             "Mr. Qi"
         };
-        public string GetDisplayText<T>(T character, Item item = null) where T : Character
+        public string GetDisplayText<T>(string currentDisplay, T character, Item item = null) where T : Character
         {
             return "";
         }
 
-        public string GetHeaderText<T>(T character, Item item = null) where T : Character
+        public string GetHeaderText<T>(string currentHeader, T character, Item item = null) where T : Character
         {
             return character.displayName;
         }

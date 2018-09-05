@@ -6,20 +6,21 @@ using System.Threading.Tasks;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Characters;
 
 namespace RelationshipTooltips.Relationships
 {
-    public class VillagerNameScreenRelationship : IRelationship, IInputListener
+    public class NameScreenRelationship : IRelationship, IInputListener
     {
-        public VillagerNameScreenRelationship(ModConfig config)
+        public NameScreenRelationship(ModConfig config)
         {
             Display = false;
             Config = config;
         }
         private ModConfig Config;
         public bool Display { get; set; }
-        public SButton DisplayKey { get { return Config.toggleDisplayKey; } }
-        public Func<Character, Item, bool> ConditionsMet => (c, i) => { return Display && c.GetType() == typeof(NPC) && !((NPC)c).IsMonster; };
+        private SButton DisplayKey { get { return Config.DisplayAllNPCNamesKey; } }
+        public Func<Character, Item, bool> ConditionsMet => (c, i) => { return Display && (c is NPC && !((NPC)c).IsMonster || c is FarmAnimal || c is Horse); };
 
         public int Priority => 30000;
 
@@ -37,8 +38,25 @@ namespace RelationshipTooltips.Relationships
         public string GetHeaderText<T>(string currentHeader, T character, Item item = null) where T : Character
         {
             NPC n = character as NPC;
-            if (n == null)
+            if (n == null || currentHeader != "")
+            {
+                if (character is FarmAnimal || character is Horse)
+                    return character.displayName;
                 return "";
+            }
+            if(character.GetType() == typeof(NPC))
+            {
+                if (Game1.player.friendshipData.ContainsKey(character.Name))
+                {
+                    return character.displayName;
+                }
+                else if (NonFriendNPCRelationship.NonGiftableNPCs.Contains(character.Name))
+                {
+                    return character.displayName;
+                }
+                else
+                    return "???";
+            }
             return character.displayName;
         }
     }

@@ -61,8 +61,7 @@ namespace RelationshipTooltips
             #region OnScreen
             e.RelationshipsOnScreen.AddRange(new List<IRelationship>()
             {
-                new MonsterHealthRelationship(),
-                new VillagerNameScreenRelationship()
+                new NameScreenRelationship(Config)
             });
             #endregion
         }
@@ -271,7 +270,8 @@ namespace RelationshipTooltips
             {
                 heldItem = Game1.player.CurrentItem;
                 IEnumerable<Character> locationCharacters = GetLocationCharacters(Game1.currentLocation, Game1.CurrentEvent);
-                if (TryGetOnScreen<Character>(out screenCharacters, locationCharacters)) {
+                if (TryGetOnScreen<Character>(out screenCharacters, locationCharacters))
+                {
                     if (TryGetAtMouse<Character>(out selectedCharacter, screenCharacters))
                     {
                         if (isFirstTickForMouseHover)
@@ -291,7 +291,7 @@ namespace RelationshipTooltips
                     }
                     foreach (Character c in screenCharacters)
                     {
-                        if (c==null || c == Game1.player || c == selectedCharacter)
+                        if (c == null || c == Game1.player || c == selectedCharacter)
                             continue;
                         if (!screenTooltipCache.ContainsKey(c))
                             screenTooltipCache.Add(c, new Tooltip(0, 0, Color.White, FrameAnchor.BottomMid));
@@ -299,7 +299,10 @@ namespace RelationshipTooltips
                     }
                 }
                 else
+                {
+                    selectedCharacter = null; 
                     isFirstTickForMouseHover = true;
+                }
 
             }
             else

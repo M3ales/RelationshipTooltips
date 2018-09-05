@@ -1,4 +1,5 @@
-﻿using StardewValley;
+﻿using StardewModdingAPI;
+using StardewValley;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace RelationshipTooltips
         public bool displayBirthday = true;
         public string birthdayFormatted = "It's {0}'s birthday today!";
         #endregion
+        public SButton DisplayAllNPCNamesKey = SButton.Tab;
         #region NPCHeartLevel
         public string friendshipAcquaintance = "Acquaintance";
         public string friendshipFriend = "Friend";

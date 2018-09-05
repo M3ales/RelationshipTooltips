@@ -18,7 +18,7 @@ namespace RelationshipTooltips.Relationships
         private bool CheckConditions(Character c, Item i)
         {
             NPC npc = c as NPC;
-            return c != null && npc.isVillager() && Game1.player.friendshipData.ContainsKey(c.Name) && npc.isBirthday(Game1.currentSeason, Game1.dayOfMonth);
+            return npc != null && npc.isVillager() && Game1.player.friendshipData.ContainsKey(c.Name) && npc.isBirthday(Game1.currentSeason, Game1.dayOfMonth);
 
         }
         public virtual int Priority => -20000;

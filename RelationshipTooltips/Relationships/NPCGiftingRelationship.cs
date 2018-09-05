@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bookcase.Events;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -11,7 +12,7 @@ using StardewValley.Quests;
 
 namespace RelationshipTooltips.Relationships
 {
-    public class NPCGiftingRelationship : NPCRelationship, IInputListener, IPerSaveSerializable
+    public class NPCGiftingRelationship : NPCRelationship, IPerSaveSerializable
     {
         public enum GiftResponse
         {
@@ -30,14 +31,17 @@ namespace RelationshipTooltips.Relationships
             Display = config.displayGiftInfo;
             Record = config.recordGiftInfo;
             KnowsAll = config.playerKnowsAllGifts;
+            Bookcase.Events.BookcaseEvents.NPCReceiveGiftPre.Add(OnNPCReceiveGift);
+        }
+        public void OnNPCReceiveGift(NPCReceiveGiftEvent args)
+        {
+            if(args.Giver == Game1.player)
+            {
+                GiftLog.AddGift(args.Target, args.Gift);
+            }
         }
         public override int Priority => -10000;
         public override Func<Character, Item, bool> ConditionsMet => (c, i) => { return Display && i != null && !c.IsMonster && (c.GetType() == typeof(NPC)) && ((NPC)c).isVillager() && i.canBeGivenAsGift(); };
-        #region Input
-        Action<Character, Item, EventArgsInput> IInputListener.ButtonPressed => (c, i, args) => { return; };
-        
-        Action<Character, Item, EventArgsInput> IInputListener.ButtonReleased => ((IInputListener)this).ButtonPressed;
-        #endregion
         #region Serialization
         private string GiftInfoPath
         {
@@ -60,6 +64,7 @@ namespace RelationshipTooltips.Relationships
             }
         }
         Action<IModHelper> IPerSaveSerializable.LoadData => OnLoad;
+
         private void OnLoad(IModHelper helper)
         {
             if (Record)
@@ -71,6 +76,7 @@ namespace RelationshipTooltips.Relationships
                 GiftLog = new GiftSaveInfo();
         }
         #endregion
+
         #region Tooltip
         public override string GetHeaderText<T>(string currentHeader, T character, Item item = null)
         {
