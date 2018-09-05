@@ -5,7 +5,7 @@ A tooltip mod which displays NPC friendship/relationship information on mouse ho
 ## API
 As of RT 2.0.0-beta.2 you can now add your own text to the relationship tooltips mod. It currently will search for *anything* inheriting from `StardewValley.Character` and allow you to provide conditions for different text displays. It's currently limited to text, but hopefully in future this will expand to Images.
 
-An example implementation as well as setup walkthrough can is up [here](https://github.com/M3ales/RTExampleMod).
+An example implementation as well as setup walkthrough is up [here](https://github.com/M3ales/RTExampleMod).
 ### Notes on API
 * Don't use Priorities which are single increments of eachother unless you are **EXPLICITLY** intending them never to have anything run inbetween.
 * Try stay away from Priorities which are the same, since their ordering is random dependant on the load order.
