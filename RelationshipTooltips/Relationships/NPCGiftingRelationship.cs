@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,27 +32,11 @@ namespace RelationshipTooltips.Relationships
             KnowsAll = config.playerKnowsAllGifts;
         }
         public override int Priority => -10000;
-        public override Func<Character, Item, bool> ConditionsMet => (c, i) => { return Display && i != null && !c.IsMonster && c is NPC && ((NPC)c).isVillager() && i.canBeGivenAsGift(); };
+        public override Func<Character, Item, bool> ConditionsMet => (c, i) => { return Display && i != null && !c.IsMonster && (c.GetType() == typeof(NPC)) && ((NPC)c).isVillager() && i.canBeGivenAsGift(); };
         #region Input
         Action<Character, Item, EventArgsInput> IInputListener.ButtonPressed => (c, i, args) => { return; };
-        public void OnButtonReleased(Character c, Item i, EventArgsInput args)
-        {
-            if (Record && (args.IsActionButton || args.IsUseToolButton) && c != null && i != null)
-            {//not great solution but these are conditions needed to work as far as I can see.
-                if (c is NPC)
-                {
-                    if (Game1.player.friendshipData.ContainsKey(c.Name))
-                    {
-                        if (Game1.player.friendshipData[c.Name].GiftsThisWeek != NPC.maxGiftsPerWeek)
-                        {
-                            Monitor.Log($"Recorded gift '{c.Name}' to '{c.Name}'");
-                            GiftLog.AddGift(c as NPC, i);
-                        }
-                    }
-                }
-            }
-        }
-        Action<Character, Item, EventArgsInput> IInputListener.ButtonReleased => OnButtonReleased;
+        
+        Action<Character, Item, EventArgsInput> IInputListener.ButtonReleased => ((IInputListener)this).ButtonPressed;
         #endregion
         #region Serialization
         private string GiftInfoPath
