@@ -82,7 +82,6 @@
     <Compile Include="Relationships\IPerSaveSerializable.cs" />
     <Compile Include="Relationships\IRelationship.cs" />
     <Compile Include="Relationships\IUpdateable.cs" />
-    <Compile Include="Relationships\MonsterHealthRelationship.cs" />
     <Compile Include="Relationships\NonFriendNPCRelationship.cs" />
     <Compile Include="Relationships\NPCGiftingRelationship.cs" />
     <Compile Include="Relationships\NameScreenRelationship.cs" />
