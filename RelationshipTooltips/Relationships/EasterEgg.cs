@@ -20,7 +20,7 @@ namespace RelationshipTooltips.Relationships
 
         public override string GetHeaderText<T>(string currentHeader, T character, Item item = null)
         {
-            return base.GetHeaderText(currentHeader, character, item);
+            return "";
         }
     }
 }
