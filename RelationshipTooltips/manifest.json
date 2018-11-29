@@ -5,7 +5,7 @@
   "Description": "Displays NPC relationship tooltip on mouseover, configurable. Additionally provides gifting information.",
   "UniqueID": "M3ales.RelationshipTooltips",
   "EntryDll": "RelationshipTooltips.dll",
-  "MinimumApiVersion": "2.0",
+  "MinimumApiVersion": "2.8",
   "UpdateKeys": [ "GitHub:M3ales/RelationshipTooltips" ],
   "Dependencies": [
     {
