@@ -131,12 +131,13 @@ namespace RelationshipTooltips
         }
         private IEnumerable<Character> GetLocationCharacters(GameLocation location, Event currentEvent = null)
         {
+
             if (location is AnimalHouse)
             {
                 return (location as AnimalHouse).animals.Values
                     .Cast<Character>()
                     .Union(location.getCharacters())
-                    .Union(location.getFarmers());
+                    .Union(location.farmers.Cast<Character>());
             }
             if (currentEvent != null && Config.displayTooltipDuringEvent)
             {
@@ -146,7 +147,7 @@ namespace RelationshipTooltips
             }
             return location.getCharacters()
                     .Cast<Character>()
-                    .Union(location.getFarmers());
+                    .Union(location.farmers.Cast<Character>());
         }
         /// <summary>
         /// Attempts to get a Character under the mouse, allows for more specific filtering via specification of T other than Character.
